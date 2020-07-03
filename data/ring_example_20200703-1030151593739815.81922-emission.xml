@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2020년 07월 03일 (금) 오전 10시 30분 33초 by Eclipse SUMO GUI Version v1_1_0+0000-2147d155b1
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/bmil02/flow/flow/core/kernel/network/debug/cfg/ring_example_20200703-1030151593739815.81922.net.xml"/>
+        <route-files value="/home/bmil02/flow/flow/core/kernel/network/debug/cfg/ring_example_20200703-1030151593739815.81922.rou.xml"/>
+        <additional-files value="/home/bmil02/flow/flow/core/kernel/network/debug/cfg/ring_example_20200703-1030151593739815.81922.add.xml"/>
+    </input>
+
+    <output>
+        <emission-output value="data/ring_example_20200703-1030151593739815.81922-emission.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <step-length value="0.1"/>
+    </time>
+
+    <processing>
+        <collision.check-junctions value="true"/>
+        <time-to-teleport value="-1"/>
+    </processing>
+
+    <report>
+        <no-step-log value="true"/>
+    </report>
+
+    <traci_server>
+        <remote-port value="37251"/>
+        <num-clients value="1"/>
+    </traci_server>
+
+    <gui_only>
+        <gui-settings-file value="/home/bmil02/flow/flow/core/kernel/network/debug/cfg/ring_example_20200703-1030151593739815.81922.gui.cfg"/>
+        <tracker-interval value="0.1"/>
+    </gui_only>
+
+</configuration>
+-->
+
+<emission-export xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/emission_file.xsd">
+</emission-export>
