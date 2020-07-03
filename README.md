@@ -18,4 +18,6 @@ Reinforcement Learning Practice for Multi-Agent Autonomous vehicle in BMIL
 
 # Contributer
 Soongsil University
-강민수, 이기홍, 임현주
+Minsoo Kang
+Gihong Lee
+Hyunju Lim
