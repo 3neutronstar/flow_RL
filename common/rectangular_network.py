@@ -36,9 +36,6 @@ class myNetwork(myNetwork):  # update my network class
 
         return nodes
 
-
-class myNetwork(myNetwork):  # update my network class
-
     def specify_edges(self, net_params):
         r = net_params.additional_params["st_line"]
         edgelen = r
@@ -83,18 +80,57 @@ class myNetwork(myNetwork):  # update my network class
                 "to": "LeftUp",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            },
+            {
+                "id": "edge4",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "LeftDown",
+                "to": "LeftUp",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(-pi/2, 0, 40)]
+            },
+            {
+                "id": "edge5",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "RightDown",
+                "to": "LeftDown",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(0, pi/2, 40)]
+            },
+            {
+                "id": "edge6",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "RightUp",
+                "to": "RightDown",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi/2, pi, 40)]
+            },
+            {
+                "id": "edge7",
+                "numLanes": lanes,
+                "speed": speed_limit,
+                "from": "LeftUp",
+                "to": "RightUp",
+                "length": edgelen,
+                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             }
         ]
 
         return edges
 
-
-class myNetwork(myNetwork):  # update my network class
     def specify_routes(self, net_params):
         rts = {"edge0": ["edge0", "edge1", "edge2", "edge3"],
                "edge1": ["edge1", "edge2", "edge3", "edge0"],
                "edge2": ["edge2", "edge3", "edge0", "edge1"],
-               "edge3": ["edge3", "edge0", "edge1", "edge2"]}
+               "edge3": ["edge3", "edge0", "edge1", "edge2"],
+               "edge4": ["edge4", "edge7", "edge6", "edge5"],
+               "edge5": ["edge5", "edge4", "edge7", "edge6"],
+               "edge6": ["edge6", "edge5", "edge4", "edge7"],
+               "edge7": ["edge7", "edge6", "edge5", "edge4"]
+               }
 
         return rts
 
