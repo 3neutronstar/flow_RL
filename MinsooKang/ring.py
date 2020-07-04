@@ -32,7 +32,7 @@ initial_config = InitialConfig(spacing="uniform", perturbation=1)
 traffic_lights = TrafficLightParams()
 
 sim_params = SumoParams(sim_step=0.1, render=True, emission_path='data')
-
+# render true는 gui 켜는 것
 print(ADDITIONAL_ENV_PARAMS)
 net_params = NetParams(
     additional_params={
