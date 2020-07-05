@@ -9,15 +9,19 @@ import ray
 import flow.envs as flowenvs
 from flow.envs import WaveAttenuationPOEnv
 from flow.core.params import EnvParams
-from flow.core.params import SumoParams
+from flow.core.params import SumoParams, SumoCarFollowingParams
+from flow.core.params import NetParams, InitialConfig
+from flow.core.params import VehicleParams  # vehicles class
 from flow.controllers import IDMController, ContinuousRouter
 from flow.controllers import RLController  # accelerator for RLController
-from flow.core.params import VehicleParams  # vehicles class
 from flow.networks.ring import ADDITIONAL_NET_PARAMS  # network-specific parameters
 # input parameter classes to the network class
-from flow.core.params import NetParams, InitialConfig
 from flow.networks import RingNetwork
 import flow.networks as networks
+try:
+    from ray.rllib.agents.agent import get_agent_class
+except ImportError:
+    from ray.rllib.agents.registry import get_agent_class
 
 print(networks.__all__)
 
@@ -35,7 +39,12 @@ initial_config = InitialConfig(spacing="uniform", perturbation=1)
 vehicles = VehicleParams()
 # human non-agent추가
 vehicles.add("human",
-             acceleration_controller=(IDMController, {}),
+             acceleration_controller=(IDMController, {
+                 "noise": 0.2
+             }),
+             car_following_params=SumoCarFollowingParams(
+                 min_gap=0
+             ),
              routing_controller=(ContinuousRouter, {}),
              num_vehicles=21)
 # rl agent 추가
@@ -49,7 +58,7 @@ sim_params = SumoParams(sim_step=0.1, render=False)
 
 
 # Define horizon as a variable to ensure consistent use across notebook
-HORIZON = 100
+HORIZON = 3000
 
 env_params = EnvParams(
     # length of one rollout
@@ -95,10 +104,6 @@ flow_params = dict(
     # initialization/reset (see flow.core.params.InitialConfig)
     initial=initial_config
 )
-try:
-    from ray.rllib.agents.agent import get_agent_class
-except ImportError:
-    from ray.rllib.agents.registry import get_agent_class
 
 
 # number of parallel workers
