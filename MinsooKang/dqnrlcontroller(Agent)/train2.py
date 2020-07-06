@@ -83,8 +83,9 @@ def run_model_stablebaseline(flow_params,
         the trained model
     """
     from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
-    from stable_baselines import DQN
+    from stable_baselines import DDPG
     from stable_baselines.deepq.policies import MlpPolicy
+    from stable_baselines.common.noise import NormalActionNoise,OrnsteinUhlenbeckActionNoise,AdaptiveParamNoiseSpec
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
         # The algorithms require a vectorized environment to run
@@ -93,7 +94,7 @@ def run_model_stablebaseline(flow_params,
         env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
                              for i in range(num_cpus)])
 
-    train_model = DQN('MlpPolicy', env, verbose=1, n_steps=rollout_size)
+    train_model = DDPG('MlpPolicy', env, verbose=1, param_noise=param_noise,action_noise=action_noise)
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
@@ -101,7 +102,7 @@ def run_model_stablebaseline(flow_params,
 def train_stable_baselines(submodule, flags):
     """Train policies using the PPO algorithm in stable-baselines."""
     from stable_baselines.common.vec_env import DummyVecEnv
-    from stable_baselines import DQN
+    from stable_baselines import DDPG
     flow_params = submodule.flow_params
     # Path to the saved files
     exp_tag = flow_params['exp_tag']
@@ -127,10 +128,15 @@ def train_stable_baselines(submodule, flags):
 
     # Replay the result by loading the model
     print('Loading the trained model and testing it out!')
-    model = DQN.load(save_path)
+    model = DDPG.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
     env = env_constructor(params=flow_params, version=0)()
+    
+    n_actions = env.action_space.shape[-1]
+    param_noise = None
+    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
+
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
     obs = eval_env.reset()
