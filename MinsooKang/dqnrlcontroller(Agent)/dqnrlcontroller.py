@@ -1,10 +1,10 @@
 """Contains the DQNRLController class."""
 
 from flow.controllers.base_controller import BaseController
-
+from flow.utils.registry import make_create_env
+from flow.utils.rllib import FlowParamsEncoder
 
 import json
-
 import ray
 try:
     from ray.rllib.agents.agent import get_agent_class
@@ -12,9 +12,6 @@ except ImportError:
     from ray.rllib.agents.registry import get_agent_class
 from ray.tune import run_experiments
 from ray.tune.registry import register_env
-
-from flow.utils.registry import make_create_env
-from flow.utils.rllib import FlowParamsEncoder
 
 
 class DQNRLController(BaseController):
