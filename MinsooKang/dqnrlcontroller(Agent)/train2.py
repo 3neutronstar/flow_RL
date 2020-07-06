@@ -10,6 +10,7 @@ import argparse
 import json
 import os
 import sys
+import numpy as np
 from time import strftime
 from copy import deepcopy
 
@@ -85,7 +86,7 @@ def run_model_stablebaseline(flow_params,
     from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
     from stable_baselines import DDPG
     from stable_baselines.deepq.policies import MlpPolicy
-    from stable_baselines.common.noise import NormalActionNoise,OrnsteinUhlenbeckActionNoise,AdaptiveParamNoiseSpec
+    from stable_baselines.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise, AdaptiveParamNoiseSpec
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
         # The algorithms require a vectorized environment to run
@@ -94,7 +95,12 @@ def run_model_stablebaseline(flow_params,
         env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
                              for i in range(num_cpus)])
 
-    train_model = DDPG('MlpPolicy', env, verbose=1, param_noise=param_noise,action_noise=action_noise)
+    n_actions = env.action_space.shape[-1]
+    param_noise = None
+    action_noise = OrnsteinUhlenbeckActionNoise(
+        mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
+    train_model = DDPG('MlpPolicy', env, verbose=1,
+                       param_noise=param_noise, action_noise=action_noise)
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
@@ -132,10 +138,6 @@ def train_stable_baselines(submodule, flags):
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
     env = env_constructor(params=flow_params, version=0)()
-    
-    n_actions = env.action_space.shape[-1]
-    param_noise = None
-    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
 
     # The algorithms require a vectorized environment to run
     eval_env = DummyVecEnv([lambda: env])
