@@ -53,9 +53,7 @@ vehicles.add(veh_id="rl",
              routing_controller=(ContinuousRouter, {}),
              num_vehicles=1)
 
-
 sim_params = SumoParams(sim_step=0.1, render=False)
-
 
 # Define horizon as a variable to ensure consistent use across notebook
 HORIZON = 3000
@@ -104,7 +102,6 @@ flow_params = dict(
     # initialization/reset (see flow.core.params.InitialConfig)
     initial=initial_config
 )
-
 
 # number of parallel workers
 N_CPUS = 2
