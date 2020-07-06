@@ -178,21 +178,36 @@ class myNetwork(myNetwork):  # update my network class
         return edges
 
     def specify_routes(self, net_params):
-        rts = {"edge0": [(["edge0", "edge1", "edge2", "edge3"], 1)],
-               "edge1": [(["edge1", "edge2", "edge3", "edge0"], 1)],
-               "edge2": [(["edge2", "edge3", "edge0", "edge1"], 0.5), (["edge2", "edge11", "edge12", "edge13"], 0.5)],
-               "edge3": [(["edge3", "edge0", "edge1", "edge2"], 1)],
-               "edge4": [(["edge4", "edge7", "edge6", "edge5"], 1)],
-               "edge5": [(["edge5", "edge4", "edge7", "edge6"], 1)],
-               "edge6": [(["edge6", "edge5", "edge4", "edge7"], 0.5), (["edge6", "edge8", "edge9", "edge10"], 0.5)],
-               "edge7": [(["edge7", "edge2", "edge5", "edge4"], 1)],
-               "edge8": [(["edge8", "edge9", "edge10", "edge2"], 1)],
-               "edge9": [(["edge9", "edge10", "edge2", "edge8"], 1)],
-               "edge10": [(["edge10", "edge6", "edge8", "edge9"], 1)],
-               "edge11": [(["edge11", "edge12", "edge13", "edge6"], 1)],
-               "edge12": [(["edge12", "edge13", "edge6", "edge11"], 1)],
-               "edge13": [(["edge13", "edge6", "edge11", "edge12"], 1)],
+        rts = {"edge0": [(["edge0", "edge1", "edge2", "edge3"], 0.5), (["edge0", "edge1", "edge11", "edge12", "edge13", "edge3"], 0.5)],
+               "edge1": [(["edge1", "edge2", "edge3", "edge0"], 0.5), (["edge1", "edge11", "edge12", "edge13", "edge3", "edge0"], 0.5)],
+               "edge2": [(["edge2", "edge3", "edge0", "edge1"], 0.5), (["edge2", "edge8", "edge9", "edge10"], 0.5)],
+               "edge3": [(["edge3", "edge0", "edge1", "edge2"], 0.5), (["edge3", "edge0", "edge1", "edge11", "edge12", "edge13"], 0.5)],
+               "edge4": [(["edge4", "edge7", "edge6", "edge5"], 0.5), (["edge4", "edge7", "edge8", "edge9", "edge10", "edge5"], 0.5)],
+               "edge5": [(["edge5", "edge4", "edge7", "edge6"], 0.5), (["edge5", "edge4", "edge7", "edge8", "edge9", "edge10"], 0.5)],
+               "edge6": [(["edge6", "edge5", "edge4", "edge7"], 0.5), (["edge6", "edge11", "edge12", "edge13"], 0.5)],
+               "edge7": [(["edge7", "edge6", "edge5", "edge4"], 0.5), (["edge7", "edge8", "edge9", "edge10", "edge5", "edge4"], 0.5)],
+               "edge8": [(["edge8", "edge9", "edge10", "edge2"], 0.5), (["edge8", "edge9", "edge10","edge5", "edge4", "edge7"], 0.5)],
+               "edge9": [(["edge9", "edge10", "edge2", "edge8"], 0.5), (["edge9", "edge10","edge5", "edge4", "edge7", "edge8"], 0.5)],
+               "edge10": [(["edge10", "edge2", "edge8", "edge9"], 0.5), (["edge10","edge5", "edge4", "edge7", "edge8", "edge9"], 0.5)],
+               "edge11": [(["edge11", "edge12", "edge13", "edge6"], 0.5), (["edge11", "edge12", "edge13","edge3", "edge0", "edge1"], 0.5)],
+               "edge12": [(["edge12", "edge13", "edge6", "edge11"], 0.5), (["edge12", "edge13","edge3", "edge0", "edge1", "edge11"], 0.5)],
+               "edge13": [(["edge13", "edge6", "edge11", "edge12"], 0.5), (["edge13","edge3", "edge0", "edge1", "edge11", "edge12"], 0.5)],
                }
+        # rts = { "edge0": [(["edge1"],1)],
+        #         "edge1": [(["edge2"],0.5), (["edge11"],0.5)],
+        #         "edge2": [(["edge3"],0.5), (["edge8"],0.5)],
+        #         "edge3": [(["edge0"],1)],
+        #         "edge4": [(["edge7"],1)],
+        #         "edge5": [(["edge4"],1)],
+        #         "edge6": [(["edge11"],0.5), (["edge5"],0.5)],
+        #         "edge7": [(["edge6"],0.5), (["edge8"],0.5)],
+        #         "edge8": [(["edge9"],1)],
+        #         "edge9": [(["edge10"],1)],
+        #         "edge10": [(["edge2"],0.5), (["edge5"],0.5)],
+        #         "edge11": [(["edge12"],1)],
+        #         "edge12": [(["edge13"],1)],
+        #         "edge13": [(["edge3"],0.5), (["edge6"],0.5)]
+        #     }
 
         return rts
 
@@ -202,8 +217,7 @@ vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
              routing_controller=(ContinuousRouter, {}),
              num_vehicles=22)
-vehicles.add(veh_id="rl"
-             )
+
 
 sim_params = SumoParams(sim_step=0.1, render=True)
 
