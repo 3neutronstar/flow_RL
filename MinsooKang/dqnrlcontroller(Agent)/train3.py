@@ -1,3 +1,5 @@
+# for Gihong and Hyunju
+# avoid merging
 """Runner script for single and multi-agent reinforcement learning experiments.
 
 This script performs an RL experiment using the PPO algorithm. Choice of
@@ -11,6 +13,7 @@ import json
 import os
 import sys
 import numpy as np
+
 from time import strftime
 from copy import deepcopy
 
@@ -100,7 +103,7 @@ def run_model_stablebaseline(flow_params,
     action_noise = OrnsteinUhlenbeckActionNoise(
         mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
     train_model = DDPG('MlpPolicy', env, verbose=1,
-                       param_noise=param_noise, action_noise=action_noise)
+                       param_noise=param_noise, action_noise=action_noise, tensorboard_log='./DDPG_cartpole_tensorboard')
     train_model.learn(total_timesteps=num_steps)
     return train_model
 
