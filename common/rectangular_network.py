@@ -11,7 +11,8 @@ from flow.core.experiment import Experiment
 # define the network class, and inherit properties from the base network class
 
 
-
+class myNetwork(Network):
+    pass
 
 
 ADDITIONAL_NET_PARAMS = {
