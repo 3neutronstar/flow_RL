@@ -123,10 +123,10 @@ def train_stable_baselines(submodule, flags):
     # loading.
     print('Saving the trained model!')
     path = os.path.realpath(os.path.expanduser('~/baseline_results'))
-    ensure_dir(path)
+    # ensure_dir(path)
+    print("check")
     save_path = os.path.join(path, result_name)
     model.save(save_path)
-    print("check")
     # dump the flow params
     with open(os.path.join(path, result_name) + '.json', 'w') as outfile:
         json.dump(flow_params, outfile,

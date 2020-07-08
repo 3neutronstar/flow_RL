@@ -5,7 +5,6 @@ from flow.core.params import VehicleParams
 from flow.controllers import IDMController, ContinuousRouter
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
-
 from flow.core.experiment import Experiment
 
 # define the network class, and inherit properties from the base network class
@@ -270,38 +269,38 @@ class myNetwork(myNetwork):  # update my network class
         ]
 
         return edges
-                
+
     def specify_routes(self, net_params):
-        rts = { "edge0": [(["edge0", "edge1", "edge2", "edge3","edge4", "edge5", "edge6", "edge7"],0.5), (["edge0", "edge1", "edge2","edge18","edge22", "edge7"], 0.5)],
-                "edge1": [(["edge1", "edge2", "edge3","edge4", "edge5", "edge6", "edge7", "edge0"],0.5), (["edge1", "edge2", "edge3","edge4", "edge17", "edge21"], 0.5)],
-                "edge2": [(["edge2", "edge3","edge4", "edge5", "edge6", "edge7", "edge0", "edge1"],0.5), (["edge2", "edge18","edge22", "edge7","edge0", "edge1"], 0.5)],
-                "edge3": [(["edge3","edge4", "edge5", "edge6", "edge7", "edge0", "edge1", "edge2"],0.5), (["edge3", "edge4", "edge17","edge21","edge1", "edge2"], 0.5)],
-                "edge4": [(["edge4", "edge5", "edge6", "edge7", "edge0", "edge1", "edge2","edge3"],0.5), (["edge4", "edge5", "edge6","edge19","edge23", "edge3"], 0.5)],
-                "edge5": [(["edge5", "edge6", "edge7", "edge0", "edge1", "edge2","edge3", "edge4"],0.5), (["edge5", "edge6", "edge7","edge0", "edge16","edge20"], 0.5)],
-                "edge6": [(["edge6", "edge7", "edge0", "edge1", "edge2","edge3", "edge4", "edge5"],0.5), (["edge6", "edge19","edge23", "edge3","edge4", "edge5"], 0.5)],
-                "edge7": [(["edge7", "edge0", "edge1", "edge2","edge3", "edge4", "edge5", "edge6"],0.5), (["edge7", "edge0", "edge16","edge20","edge5", "edge6"], 0.5)],
+        rts = {"edge0": [(["edge0", "edge1", "edge2", "edge3", "edge4", "edge5", "edge6", "edge7"], 0.5), (["edge0", "edge1", "edge2", "edge18", "edge22", "edge7"], 0.5)],
+               "edge1": [(["edge1", "edge2", "edge3", "edge4", "edge5", "edge6", "edge7", "edge0"], 0.5), (["edge1", "edge2", "edge3", "edge4", "edge17", "edge21"], 0.5)],
+               "edge2": [(["edge2", "edge3", "edge4", "edge5", "edge6", "edge7", "edge0", "edge1"], 0.5), (["edge2", "edge18", "edge22", "edge7", "edge0", "edge1"], 0.5)],
+               "edge3": [(["edge3", "edge4", "edge5", "edge6", "edge7", "edge0", "edge1", "edge2"], 0.5), (["edge3", "edge4", "edge17", "edge21", "edge1", "edge2"], 0.5)],
+               "edge4": [(["edge4", "edge5", "edge6", "edge7", "edge0", "edge1", "edge2", "edge3"], 0.5), (["edge4", "edge5", "edge6", "edge19", "edge23", "edge3"], 0.5)],
+               "edge5": [(["edge5", "edge6", "edge7", "edge0", "edge1", "edge2", "edge3", "edge4"], 0.5), (["edge5", "edge6", "edge7", "edge0", "edge16", "edge20"], 0.5)],
+               "edge6": [(["edge6", "edge7", "edge0", "edge1", "edge2", "edge3", "edge4", "edge5"], 0.5), (["edge6", "edge19", "edge23", "edge3", "edge4", "edge5"], 0.5)],
+               "edge7": [(["edge7", "edge0", "edge1", "edge2", "edge3", "edge4", "edge5", "edge6"], 0.5), (["edge7", "edge0", "edge16", "edge20", "edge5", "edge6"], 0.5)],
 
-                "edge8": [(["edge8", "edge9", "edge10", "edge11","edge12", "edge13", "edge14", "edge15"],0.5), (["edge8", "edge19","edge23", "edge13","edge14", "edge15"], 0.5)],
-                "edge9": [(["edge9", "edge10", "edge11","edge12", "edge13", "edge14", "edge15", "edge8"],0.5), (["edge9", "edge10", "edge17","edge21","edge15", "edge8"], 0.5)],
-                "edge10": [(["edge10", "edge11","edge12", "edge13", "edge14", "edge15", "edge8", "edge9"],0.5), (["edge10", "edge11", "edge12","edge18","edge22", "edge9"], 0.5)],
-                "edge11": [(["edge11","edge12", "edge13", "edge14", "edge15", "edge8", "edge9", "edge10"],0.5), (["edge11", "edge12", "edge18","edge22","edge9", "edge10"], 0.5)],
-                "edge12": [(["edge12", "edge13", "edge14", "edge15", "edge8", "edge9", "edge10", "edge11"],0.5), (["edge12", "edge13", "edge14","edge16","edge20", "edge11"], 0.5)],
-                "edge13": [(["edge13", "edge14", "edge15", "edge8", "edge9", "edge10", "edge11", "edge12"],0.5), (["edge13", "edge14", "edge15","edge8", "edge19","edge23"], 0.5)],
-                "edge14": [(["edge14", "edge15", "edge8", "edge9", "edge10", "edge11", "edge12", "edge13"],0.5), (["edge14", "edge16","edge20", "edge11","edge12", "edge13"], 0.5)],
-                "edge15": [(["edge15", "edge8", "edge9", "edge10", "edge11", "edge12", "edge13", "edge14"],0.5), (["edge15", "edge8", "edge9","edge10", "edge17", "edge21"], 0.5)],
-                
-                "edge16": [(["edge16","edge20", "edge11", "edge12", "edge13", "edge14"],0.5), (["edge16","edge20", "edge5", "edge6","edge7", "edge0"], 0.5)],
-                "edge17": [(["edge17","edge21", "edge15", "edge8", "edge9", "edge10"],0.5), (["edge17","edge21", "edge1", "edge2","edge3", "edge4"], 0.5)],
+               "edge8": [(["edge8", "edge9", "edge10", "edge11", "edge12", "edge13", "edge14", "edge15"], 0.5), (["edge8", "edge19", "edge23", "edge13", "edge14", "edge15"], 0.5)],
+               "edge9": [(["edge9", "edge10", "edge11", "edge12", "edge13", "edge14", "edge15", "edge8"], 0.5), (["edge9", "edge10", "edge17", "edge21", "edge15", "edge8"], 0.5)],
+               "edge10": [(["edge10", "edge11", "edge12", "edge13", "edge14", "edge15", "edge8", "edge9"], 0.5), (["edge10", "edge11", "edge12", "edge18", "edge22", "edge9"], 0.5)],
+               "edge11": [(["edge11", "edge12", "edge13", "edge14", "edge15", "edge8", "edge9", "edge10"], 0.5), (["edge11", "edge12", "edge18", "edge22", "edge9", "edge10"], 0.5)],
+               "edge12": [(["edge12", "edge13", "edge14", "edge15", "edge8", "edge9", "edge10", "edge11"], 0.5), (["edge12", "edge13", "edge14", "edge16", "edge20", "edge11"], 0.5)],
+               "edge13": [(["edge13", "edge14", "edge15", "edge8", "edge9", "edge10", "edge11", "edge12"], 0.5), (["edge13", "edge14", "edge15", "edge8", "edge19", "edge23"], 0.5)],
+               "edge14": [(["edge14", "edge15", "edge8", "edge9", "edge10", "edge11", "edge12", "edge13"], 0.5), (["edge14", "edge16", "edge20", "edge11", "edge12", "edge13"], 0.5)],
+               "edge15": [(["edge15", "edge8", "edge9", "edge10", "edge11", "edge12", "edge13", "edge14"], 0.5), (["edge15", "edge8", "edge9", "edge10", "edge17", "edge21"], 0.5)],
 
-                "edge18": [(["edge18","edge22", "edge9", "edge10", "edge11", "edge12"],0.5), (["edge18","edge22", "edge7", "edge0","edge1", "edge2"], 0.5)],
-                "edge19": [(["edge19","edge23", "edge13", "edge14", "edge15", "edge8"],0.5), (["edge19","edge23", "edge3", "edge4","edge5", "edge6"], 0.5)],
+               "edge16": [(["edge16", "edge20", "edge11", "edge12", "edge13", "edge14"], 0.5), (["edge16", "edge20", "edge5", "edge6", "edge7", "edge0"], 0.5)],
+               "edge17": [(["edge17", "edge21", "edge15", "edge8", "edge9", "edge10"], 0.5), (["edge17", "edge21", "edge1", "edge2", "edge3", "edge4"], 0.5)],
 
-                "edge20": [(["edge20","edge5", "edge6", "edge7", "edge0", "edge16"],0.5), (["edge20","edge11", "edge12", "edge13","edge14", "edge16"], 0.5)],
-                "edge21": [(["edge21","edge15", "edge8", "edge9", "edge10", "edge17"],0.5), (["edge21","edge1", "edge2", "edge3","edge4", "edge17"], 0.5)],
+               "edge18": [(["edge18", "edge22", "edge9", "edge10", "edge11", "edge12"], 0.5), (["edge18", "edge22", "edge7", "edge0", "edge1", "edge2"], 0.5)],
+               "edge19": [(["edge19", "edge23", "edge13", "edge14", "edge15", "edge8"], 0.5), (["edge19", "edge23", "edge3", "edge4", "edge5", "edge6"], 0.5)],
 
-                "edge22": [(["edge22","edge9", "edge10", "edge11", "edge12", "edge18"],0.5), (["edge22","edge7", "edge0", "edge1","edge2", "edge18"], 0.5)],
-                "edge23": [(["edge23","edge13", "edge14", "edge15", "edge8", "edge19"],0.5), (["edge23","edge3", "edge4", "edge5","edge6", "edge19"], 0.5)],
-              
+               "edge20": [(["edge20", "edge5", "edge6", "edge7", "edge0", "edge16"], 0.5), (["edge20", "edge11", "edge12", "edge13", "edge14", "edge16"], 0.5)],
+               "edge21": [(["edge21", "edge15", "edge8", "edge9", "edge10", "edge17"], 0.5), (["edge21", "edge1", "edge2", "edge3", "edge4", "edge17"], 0.5)],
+
+               "edge22": [(["edge22", "edge9", "edge10", "edge11", "edge12", "edge18"], 0.5), (["edge22", "edge7", "edge0", "edge1", "edge2", "edge18"], 0.5)],
+               "edge23": [(["edge23", "edge13", "edge14", "edge15", "edge8", "edge19"], 0.5), (["edge23", "edge3", "edge4", "edge5", "edge6", "edge19"], 0.5)],
+
                }
 
         return rts
