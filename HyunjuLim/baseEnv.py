@@ -46,11 +46,27 @@ class Env(gym.Env,metaclass=ABCMeta):
     choose to use it with an rl library (e.g. RLlib). This can be done by
     overloading the following functions in a child class:
 
-    * action_space
-    * observation_space
-    * apply_rl_action
-    * get_state
-    * compute_reward
+    * action_space -> return : gym.box or gym.tuple
+    * observation_space -> return : gym.box or gym.tuple
+    * _apply_rl_action
+    * get_state : agent가 인지한 state를 get -> return : state(agent에 의해 제공되는 vehicles의 state)
+    * compute_reward -> return : float or list of float
+
+    * __init__
+    * setup_initial_state : 차량 shuffle, start_pos, start_lanes, speed(k.vehicle.get_initial_speed에서) 설정
+    * reset_simulation: visualizing a rollout하기 위해, runtime이 너무 길 때 사용
+    * reset : rollout 사이에 실행 (vehicles를 start 위치로 reset)
+    * termiante : k.close()
+    * apply_rl_actions: RL agent가 한 action을 get
+    * clip_actions: box or boxes에 의해 rl_action clipped -> return : array_like
+    * step : rl_action 받아서 observation, reward, done, info를 return
+
+
+    참고
+    ----------
+    gym.box or gym.tuple : space의 bound와 shape를 묘사하는 box or tuple
+    array_like : the rl_actions clipped according to the box or boxes
+ 
 
     Attributes
     ----------
