@@ -7,6 +7,7 @@ from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
 from Network.ring_intest import RingNetwork_intest
+
 vehicles = VehicleParams()
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
