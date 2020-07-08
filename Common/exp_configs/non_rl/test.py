@@ -11,7 +11,7 @@ from flow.networks.ring import RingNetwork, ADDITIONAL_NET_PARAMS
 from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
-from Network.Custom_Network import myNetwork
+from Common.Network.intersection_network import IntersectionNetwork
 
 
 ADDITIONAL_NET_PARAMS = {
@@ -37,9 +37,9 @@ additional_net_params = ADDITIONAL_NET_PARAMS.copy()
 net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
-    exp_tag='test',
+    exp_tag='Intersection',
     env_name=AccelEnv,
-    network=myNetwork,
+    network=IntersectionNetwork,
     simulator='traci',
     sim=sim_params,
     env=env_params,
