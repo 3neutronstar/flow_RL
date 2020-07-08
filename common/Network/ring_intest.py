@@ -1,11 +1,3 @@
-"""Used as an example of ring experiment.
-This example consists of 22 IDM cars on a ring creating shockwaves.
-"""
-from flow.controllers import IDMController, ContinuousRouter
-from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
-from flow.core.params import VehicleParams
-from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
-from flow.networks.ring import RingNetwork, ADDITIONAL_NET_PARAMS
 from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
@@ -20,13 +12,6 @@ ADDITIONAL_NET_PARAMS = {
     "num_lanes": 1,
     "speed_limit": 30,
 }
-
-vehicles = VehicleParams()
-vehicles.add(
-    veh_id="idm",
-    acceleration_controller=(IDMController, {}),
-    routing_controller=(ContinuousRouter, {}),
-    num_vehicles=22)
 
 
 class RingNetwork_intest(RingNetwork_intest):
@@ -57,11 +42,11 @@ class RingNetwork_intest(RingNetwork_intest):
         damg_rows = damg.shape[1]
         for n_cols in range(0, damg_cols):
             for n_rows in range(0, damg_rows):
-                if(np.damg[n_cols][n_rows] > 0):
-                    insert_id = str("e_"+n_cols+"_"+n_rows)
+                if(damg[n_cols][n_rows] > 0):
+                    insert_id = str("e_"+str(n_cols)+"_"+str(n_rows))
                     edges.append({"id": insert_id,
-                                  "from": str(n_rows),
-                                  "to": str(n_cols),
+                                  "from": str(n_cols),
+                                  "to": str(n_rows),
                                   "numLanes": damg[n_cols][n_rows],
                                   "speed": speed_limit,
                                   "length": edgelen,

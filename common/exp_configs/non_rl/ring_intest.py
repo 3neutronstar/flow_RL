@@ -7,7 +7,6 @@ from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
 from Network.ring_intest import RingNetwork_intest
-
 vehicles = VehicleParams()
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
@@ -30,7 +29,7 @@ flow_params = dict(
     # name of the flow environment the experiment is running on
     env_name=AccelEnv,
     # name of the network class the experiment is running on
-    network=RingNetwork,  # RingNetwork_intest
+    network=RingNetwork_intest,  # RingNetwork_intest
     # simulator that is used by the experiment
     simulator='traci',
     # sumo-related parameters (see flow.core.params.SumoParams)
