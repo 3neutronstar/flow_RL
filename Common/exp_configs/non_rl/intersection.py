@@ -29,7 +29,7 @@ vehicles.add(veh_id="human",
 
 sim_params = SumoParams(sim_step=0.1, render=True)
 
-initial_config = InitialConfig(spacing="random", bunching=40)
+initial_config = InitialConfig(spacing="uniform", bunching=40)
 
 env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
 
@@ -37,7 +37,7 @@ additional_net_params = ADDITIONAL_NET_PARAMS.copy()
 net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
-    exp_tag='Intersection',
+    exp_tag='intersection',
     env_name=AccelEnv,
     network=IntersectionNetwork,
     simulator='traci',
