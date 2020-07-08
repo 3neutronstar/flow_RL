@@ -1,0 +1,108 @@
+{
+    "env": {
+        "additional_params": {
+            "max_accel": 3,
+            "max_decel": 3,
+            "sort_vehicles": false,
+            "target_velocity": 10
+        },
+        "clip_actions": true,
+        "evaluate": false,
+        "horizon": 1500,
+        "sims_per_step": 1,
+        "warmup_steps": 0
+    },
+    "env_name": "flow.envs.ring.accel.AccelEnv",
+    "exp_tag": "ring",
+    "initial": {
+        "additional_params": {},
+        "bunching": 20,
+        "edges_distribution": "all",
+        "lanes_distribution": Infinity,
+        "min_gap": 0,
+        "perturbation": 0.0,
+        "shuffle": false,
+        "spacing": "uniform",
+        "x0": 0
+    },
+    "net": {
+        "additional_params": {
+            "lanes": 1,
+            "length": 230,
+            "resolution": 40,
+            "speed_limit": 30
+        },
+        "inflows": {
+            "_InFlows__flows": []
+        },
+        "osm_path": null,
+        "template": null
+    },
+    "network": "flow.networks.ring.RingNetwork",
+    "sim": {
+        "color_by_speed": false,
+        "emission_path": "./data",
+        "force_color_update": false,
+        "lateral_resolution": null,
+        "no_step_log": true,
+        "num_clients": 1,
+        "overtake_right": false,
+        "port": null,
+        "print_warnings": true,
+        "pxpm": 2,
+        "render": true,
+        "restart_instance": false,
+        "save_render": false,
+        "seed": null,
+        "show_radius": false,
+        "sight_radius": 25,
+        "sim_step": 0.1,
+        "teleport_time": -1,
+        "use_ballistic": false
+    },
+    "simulator": "traci",
+    "veh": [
+        {
+            "acceleration_controller": [
+                "IDMController",
+                {}
+            ],
+            "car_following_params": {
+                "controller_params": {
+                    "accel": 2.6,
+                    "carFollowModel": "IDM",
+                    "decel": 4.5,
+                    "impatience": 0.5,
+                    "maxSpeed": 30,
+                    "minGap": 2.5,
+                    "sigma": 0.5,
+                    "speedDev": 0.1,
+                    "speedFactor": 1.0,
+                    "tau": 1.0
+                },
+                "speed_mode": 25
+            },
+            "initial_speed": 0,
+            "lane_change_controller": [
+                "SimLaneChangeController",
+                {}
+            ],
+            "lane_change_params": {
+                "controller_params": {
+                    "laneChangeModel": "LC2013",
+                    "lcCooperative": "1.0",
+                    "lcKeepRight": "1.0",
+                    "lcSpeedGain": "1.0",
+                    "lcStrategic": "1.0"
+                },
+                "lane_change_mode": 512
+            },
+            "num_vehicles": 22,
+            "routing_controller": [
+                "ContinuousRouter",
+                {}
+            ],
+            "veh_id": "idm"
+        }
+    ]
+}

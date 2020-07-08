@@ -1,6 +1,6 @@
 """Base environment class. This is the parent of all other environments."""
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod # 추상클래스
 from copy import deepcopy
 import os
 import atexit
@@ -14,7 +14,10 @@ from flow.renderer.pyglet_renderer import PygletRenderer as Renderer
 from flow.utils.flow_warnings import deprecated_attribute
 
 import gym
-from gym.spaces import Box
+# gym.spaces = There is a convenient sample method to generate uniform random samples in the space.
+# All instances have a sample method which will sample random instances within the space
+# gym.spaces.Discrete / MutiDiscrete / Box / Tuple
+from gym.spaces import Box # Used for multidimensional continuous spaces with bounds
 from gym.spaces import Tuple
 from traci.exceptions import FatalTraCIError
 from traci.exceptions import TraCIException
@@ -27,10 +30,11 @@ from flow.core.kernel import Kernel
 from flow.utils.exceptions import FatalFlowError
 
 
-class Env(gym.Env, metaclass=ABCMeta):
+class Env(gym.Env,metaclass=ABCMeta):
     """Base environment class.
 
     Provides the interface for interacting with various aspects of a traffic
+    simulation. Using this class, you can start a Provides the interface for interacting with various aspects of a traffic
     simulation. Using this class, you can start a simulation instance, provide
     a network to specify a configuration and controllers, perform simulation
     steps, and reset the simulation to an initial configuration.
@@ -268,6 +272,7 @@ class Env(gym.Env, metaclass=ABCMeta):
 
     def setup_initial_state(self):
         """Store information on the initial state of vehicles in the network.
+           네트워크에서  차량의 초기 state 정보 저장
 
         This information is to be used upon reset. This method also adds this
         information to the self.vehicles class and starts a subscription with
@@ -277,7 +282,7 @@ class Env(gym.Env, metaclass=ABCMeta):
         if self.initial_config.shuffle:
             random.shuffle(self.initial_ids)
 
-        # generate starting position for vehicles in the network
+        # generate starting position for vehicles in the network = 차량 시작 위치
         start_pos, start_lanes = self.k.network.generate_starting_positions(
             initial_config=self.initial_config,
             num_vehicles=len(self.initial_ids))
@@ -299,6 +304,8 @@ class Env(gym.Env, metaclass=ABCMeta):
         traffic lights, etc...). Actions that are not assigned are left to the
         control of the simulator. The actions are then used to advance the
         simulator by the number of time steps requested per environment step.
+        -> autonomous and human-driven agents에게 action 할당, 할당되지 않은 action은 simlator가 제어함
+        -> action은 environment step per time step 수로 시뮬레이터를 advance하기 위해 사용됨
 
         Results from the simulations are processed through various classes,
         such as the Vehicle and TrafficLight kernels, to produce standardized
@@ -361,8 +368,8 @@ class Env(gym.Env, metaclass=ABCMeta):
 
             self.k.vehicle.choose_routes(routing_ids, routing_actions)
 
-            self.apply_rl_actions(rl_actions)
-
+            # RL agent에 의해 지정된 명령을 수행 ex)apply_acceleration, apply_lane_change, choose_route
+            self.apply_rl_actions(rl_actions) 
             self.additional_command()
 
             # advance the simulation in the simulator by one step
@@ -401,7 +408,8 @@ class Env(gym.Env, metaclass=ABCMeta):
                 or crash)
 
         # compute the info for each agent
-        infos = {}
+        # info = contains other diagnostic information from the previous action
+        infos = {} 
 
         # compute the reward
         if self.env_params.clip_actions:
@@ -421,12 +429,14 @@ class Env(gym.Env, metaclass=ABCMeta):
 
         If "shuffle" is set to True in InitialConfig, the initial positions of
         vehicles is recalculated and the vehicles are shuffled.
+        # InitialConfig = 네트워크에서 차량 위치에 영향을 미치는 미래변수 지정 
+        # ex) 차량 출발 위치는 ramdom하게 지정, 원래 차량이 점유하던 edge와 차선 수 제한
 
         Returns
         -------
-        observation : array_like
+        observation : array_like 
             the initial observation of the space. The initial reward is assumed
-            to be zero.
+            to be zero. -> 초기 reward = 0
         """
         # reset the time counter
         self.time_counter = 0
@@ -533,7 +543,7 @@ class Env(gym.Env, metaclass=ABCMeta):
         else:
             initial_ids = self.initial_ids
 
-        # check to make sure all vehicles have been spawned
+        # check to make sure all vehicles have been spawned // 차량 생성 확인
         if len(self.initial_ids) > len(initial_ids):
             missing_vehicles = list(set(self.initial_ids) - set(initial_ids))
             msg = '\nNot enough vehicles have spawned! Bad start?\n' \
@@ -545,7 +555,7 @@ class Env(gym.Env, metaclass=ABCMeta):
         states = self.get_state()
 
         # collect information of the state of the network based on the
-        # environment class used
+        # environment class used // network의 state 정보 수집
         self.state = np.asarray(states).T
 
         # observation associated with the reset (no warm-up steps)
@@ -602,6 +612,7 @@ class Env(gym.Env, metaclass=ABCMeta):
 
         If no actions are provided at any given step, the rl agents default to
         performing actions specified by SUMO.
+        // 지정된 step에서 action을 제공하지 않으면 rl agent는 SUMO에서 제공한 기본 action을 수행
 
         Parameters
         ----------
@@ -609,7 +620,7 @@ class Env(gym.Env, metaclass=ABCMeta):
             list of actions provided by the RL algorithm
         """
         # ignore if no actions are issued
-        if rl_actions is None:
+        if rl_actions is None: 
             return
 
         rl_clipped = self.clip_actions(rl_actions)
@@ -622,6 +633,7 @@ class Env(gym.Env, metaclass=ABCMeta):
     @abstractmethod
     def get_state(self):
         """Return the state of the simulation as perceived by the RL agent.
+        RL agent가 인지한 simulation state를 반환
 
         MUST BE implemented in new environments.
 
