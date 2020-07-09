@@ -11,6 +11,15 @@ from flow.envs import Env
 class myEnv(Env):
     pass
 
+"""
+# Env 상속 받아서 건들 수 있는 것
+action_space
+observation
+apply_rl_actions
+get_state
+compute_reward
+"""
+
 # ADDITIONAL_ENV_PARAMS 
 # storing information on the maximum possible accelerations and decelerations by the autonomous vehicles in the network. 
 ADDITIONAL_ENV_PARAMS = {
