@@ -1,10 +1,14 @@
+# import Flow's base network class
+from numpy import pi, sin, cos, linspace
 from flow.networks import Network
 from flow.core.params import VehicleParams
 from flow.controllers import IDMController, ContinuousRouter
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.envs.ring.accel import AccelEnv, ADDITIONAL_ENV_PARAMS
+
 from flow.core.experiment import Experiment
-# contributor: Gihong Lee, Minsoo Kang
+
+# define the network class, and inherit properties from the base network class
 
 
 class myNetwork(Network):
@@ -32,8 +36,7 @@ class myNetwork(myNetwork):  # update my network class
                  {"id": "CL",   "x": -r, "y": 0},  # 5
                  {"id": "CR",   "x": +r, "y": 0},  # 6
                  {"id": "CU",   "x": 0, "y": r},  # 7
-                 {"id": "CD",   "x": 0, "y": -r},  # 8
-                 {"id": "IT",   "x": 0, "y": 0}]  # 9
+                 {"id": "CD",   "x": 0, "y": -r}]  # 8
 
         return nodes
 
@@ -51,7 +54,7 @@ class myNetwork(myNetwork):  # update my network class
                 "numLanes": lanes,
                 "speed": speed_limit,
                 "from": "LU",
-                "to": "CL",
+                "to": "LD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(-pi/2, 0, 40)]
             },
@@ -59,8 +62,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge1",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CL",
-                "to": "LD",
+                "from": "LD",
+                "to": "RD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(0, pi/2, 40)]
             },
@@ -68,8 +71,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge2",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "LD",
-                "to": "CD",
+                "from": "RD",
+                "to": "RU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi/2, pi, 40)]
             },
@@ -77,8 +80,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge3",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CD",
-                "to": "RD",
+                "from": "RU",
+                "to": "LU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -86,8 +89,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge4",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "RD",
-                "to": "CR",
+                "from": "LD",
+                "to": "LU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(-pi/2, 0, 40)]
             },
@@ -95,8 +98,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge5",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CR",
-                "to": "RU",
+                "from": "RD",
+                "to": "LD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(0, pi/2, 40)]
             },
@@ -105,7 +108,7 @@ class myNetwork(myNetwork):  # update my network class
                 "numLanes": lanes,
                 "speed": speed_limit,
                 "from": "RU",
-                "to": "CU",
+                "to": "RD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi/2, pi, 40)]
             },
@@ -113,35 +116,35 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge7",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CU",
-                "to": "LU",
-                "length": edgelen,
-                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
-            },
-            {
-                "id": "edge8",
-                "numLanes": lanes,
-                "speed": speed_limit,
                 "from": "LU",
-                "to": "CU",
-                "length": edgelen,
-                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
-            },
-            {
-                "id": "edge9",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "CU",
                 "to": "RU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
+            # {
+            #     "id": "edge8",
+            #     "numLanes": lanes,
+            #     "speed": speed_limit,
+            #     "from": "CL",
+            #     "to": "CR",
+            #     "length": edgelen,
+            #     # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            # },
+            # {
+            #     "id": "edge9",
+            #     "numLanes": lanes,
+            #     "speed": speed_limit,
+            #     "from": "CR",
+            #     "to": "CL",
+            #     "length": edgelen,
+            #     # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
+            # },
             {
                 "id": "edge10",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "RU",
-                "to": "CR",
+                "from": "CU",
+                "to": "CD",
                 "length": 2*edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -149,8 +152,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge11",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CR",
-                "to": "RD",
+                "from": "CD",
+                "to": "CU",
                 "length": 2*edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -158,8 +161,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge12",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "RD",
-                "to": "CD",
+                "from": "LU",
+                "to": "CL",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -167,7 +170,7 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge13",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CD",
+                "from": "CL",
                 "to": "LD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
@@ -177,7 +180,7 @@ class myNetwork(myNetwork):  # update my network class
                 "numLanes": lanes,
                 "speed": speed_limit,
                 "from": "LD",
-                "to": "CL",
+                "to": "CD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -185,8 +188,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge15",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CL",
-                "to": "LU",
+                "from": "CD",
+                "to": "RD",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -194,8 +197,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge16",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CL",
-                "to": "IT",
+                "from": "RD",
+                "to": "CR",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -204,7 +207,7 @@ class myNetwork(myNetwork):  # update my network class
                 "numLanes": lanes,
                 "speed": speed_limit,
                 "from": "CR",
-                "to": "IT",
+                "to": "RU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -212,8 +215,8 @@ class myNetwork(myNetwork):  # update my network class
                 "id": "edge18",
                 "numLanes": lanes,
                 "speed": speed_limit,
-                "from": "CD",
-                "to": "IT",
+                "from": "RU",
+                "to": "CU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             },
@@ -222,43 +225,7 @@ class myNetwork(myNetwork):  # update my network class
                 "numLanes": lanes,
                 "speed": speed_limit,
                 "from": "CU",
-                "to": "IT",
-                "length": edgelen,
-                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
-            },
-            {
-                "id": "edge20",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CR",
-                "length": edgelen,
-                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
-            },
-            {
-                "id": "edge21",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CL",
-                "length": edgelen,
-                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
-            },
-            {
-                "id": "edge22",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CU",
-                "length": edgelen,
-                # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
-            },
-            {
-                "id": "edge23",
-                "numLanes": lanes,
-                "speed": speed_limit,
-                "from": "IT",
-                "to": "CD",
+                "to": "LU",
                 "length": edgelen,
                 # "shape": [(r*cos(t), r*sin(t)) for t in linspace(pi, 3*pi/2, 40)]
             }
@@ -268,36 +235,26 @@ class myNetwork(myNetwork):  # update my network class
         return edges
 
     def specify_routes(self, net_params):
-        rts = {"edge0": [(["edge0", "edge1", "edge2", "edge3", "edge4", "edge5", "edge6", "edge7"], 0.5), (["edge0", "edge1", "edge2", "edge18", "edge22", "edge7"], 0.5)],
-               "edge1": [(["edge1", "edge2", "edge3", "edge4", "edge5", "edge6", "edge7", "edge0"], 0.5), (["edge1", "edge2", "edge3", "edge4", "edge17", "edge21"], 0.5)],
-               "edge2": [(["edge2", "edge3", "edge4", "edge5", "edge6", "edge7", "edge0", "edge1"], 0.5), (["edge2", "edge18", "edge22", "edge7", "edge0", "edge1"], 0.5)],
-               "edge3": [(["edge3", "edge4", "edge5", "edge6", "edge7", "edge0", "edge1", "edge2"], 0.5), (["edge3", "edge4", "edge17", "edge21", "edge1", "edge2"], 0.5)],
-               "edge4": [(["edge4", "edge5", "edge6", "edge7", "edge0", "edge1", "edge2", "edge3"], 0.5), (["edge4", "edge5", "edge6", "edge19", "edge23", "edge3"], 0.5)],
-               "edge5": [(["edge5", "edge6", "edge7", "edge0", "edge1", "edge2", "edge3", "edge4"], 0.5), (["edge5", "edge6", "edge7", "edge0", "edge16", "edge20"], 0.5)],
-               "edge6": [(["edge6", "edge7", "edge0", "edge1", "edge2", "edge3", "edge4", "edge5"], 0.5), (["edge6", "edge19", "edge23", "edge3", "edge4", "edge5"], 0.5)],
-               "edge7": [(["edge7", "edge0", "edge1", "edge2", "edge3", "edge4", "edge5", "edge6"], 0.5), (["edge7", "edge0", "edge16", "edge20", "edge5", "edge6"], 0.5)],
+        rts = {"edge0": ["edge0", "edge1", "edge2", "edge3"],
+               "edge1": ["edge1", "edge2", "edge3", "edge0"],
+               "edge2": ["edge2", "edge3", "edge0", "edge1"],
+               "edge3": ["edge3", "edge0", "edge1", "edge2"],
+               "edge4": ["edge4", "edge7", "edge6", "edge5"],
+               "edge5": ["edge5", "edge4", "edge7", "edge6"],
+               "edge6": ["edge6", "edge5", "edge4", "edge7"],
+               "edge7": ["edge7", "edge6", "edge5", "edge4"],
 
-               "edge8": [(["edge8", "edge9", "edge10", "edge11", "edge12", "edge13", "edge14", "edge15"], 0.5), (["edge8", "edge19", "edge23", "edge13", "edge14", "edge15"], 0.5)],
-               "edge9": [(["edge9", "edge10", "edge11", "edge12", "edge13", "edge14", "edge15", "edge8"], 0.5), (["edge9", "edge10", "edge17", "edge21", "edge15", "edge8"], 0.5)],
-               "edge10": [(["edge10", "edge11", "edge12", "edge13", "edge14", "edge15", "edge8", "edge9"], 0.5), (["edge10", "edge11", "edge12", "edge18", "edge22", "edge9"], 0.5)],
-               "edge11": [(["edge11", "edge12", "edge13", "edge14", "edge15", "edge8", "edge9", "edge10"], 0.5), (["edge11", "edge12", "edge18", "edge22", "edge9", "edge10"], 0.5)],
-               "edge12": [(["edge12", "edge13", "edge14", "edge15", "edge8", "edge9", "edge10", "edge11"], 0.5), (["edge12", "edge13", "edge14", "edge16", "edge20", "edge11"], 0.5)],
-               "edge13": [(["edge13", "edge14", "edge15", "edge8", "edge9", "edge10", "edge11", "edge12"], 0.5), (["edge13", "edge14", "edge15", "edge8", "edge19", "edge23"], 0.5)],
-               "edge14": [(["edge14", "edge15", "edge8", "edge9", "edge10", "edge11", "edge12", "edge13"], 0.5), (["edge14", "edge16", "edge20", "edge11", "edge12", "edge13"], 0.5)],
-               "edge15": [(["edge15", "edge8", "edge9", "edge10", "edge11", "edge12", "edge13", "edge14"], 0.5), (["edge15", "edge8", "edge9", "edge10", "edge17", "edge21"], 0.5)],
+               "edge10": ["edge10", "edge15", "edge16", "edge17", "edge18"],
+               "edge15": ["edge15", "edge16", "edge17", "edge17", "edge18"],
+               "edge16": ["edge16", "edge17", "edge18", "edge17", "edge18"],
+               "edge17": ["edge17", "edge18", "edge10", "edge17", "edge18"],
+               "edge18": ["edge18", "edge10", "edge15", "edge17", "edge18"],
 
-               "edge16": [(["edge16", "edge20", "edge11", "edge12", "edge13", "edge14"], 0.5), (["edge16", "edge20", "edge5", "edge6", "edge7", "edge0"], 0.5)],
-               "edge17": [(["edge17", "edge21", "edge15", "edge8", "edge9", "edge10"], 0.5), (["edge17", "edge21", "edge1", "edge2", "edge3", "edge4"], 0.5)],
-
-               "edge18": [(["edge18", "edge22", "edge9", "edge10", "edge11", "edge12"], 0.5), (["edge18", "edge22", "edge7", "edge0", "edge1", "edge2"], 0.5)],
-               "edge19": [(["edge19", "edge23", "edge13", "edge14", "edge15", "edge8"], 0.5), (["edge19", "edge23", "edge3", "edge4", "edge5", "edge6"], 0.5)],
-
-               "edge20": [(["edge20", "edge5", "edge6", "edge7", "edge0", "edge16"], 0.5), (["edge20", "edge11", "edge12", "edge13", "edge14", "edge16"], 0.5)],
-               "edge21": [(["edge21", "edge15", "edge8", "edge9", "edge10", "edge17"], 0.5), (["edge21", "edge1", "edge2", "edge3", "edge4", "edge17"], 0.5)],
-
-               "edge22": [(["edge22", "edge9", "edge10", "edge11", "edge12", "edge18"], 0.5), (["edge22", "edge7", "edge0", "edge1", "edge2", "edge18"], 0.5)],
-               "edge23": [(["edge23", "edge13", "edge14", "edge15", "edge8", "edge19"], 0.5), (["edge23", "edge3", "edge4", "edge5", "edge6", "edge19"], 0.5)],
-
+               "edge11": ["edge11", "edge19", "edge12", "edge13", "edge14"],
+               "edge19": ["edge19", "edge12", "edge13", "edge14", "edge11"],
+               "edge12": ["edge12", "edge13", "edge14", "edge11", "edge19"],
+               "edge13": ["edge13", "edge14", "edge11", "edge19", "edge12"],
+               "edge14": ["edge14", "edge11", "edge19", "edge12", "edge13"],
                }
 
         return rts
@@ -307,11 +264,11 @@ vehicles = VehicleParams()
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
              routing_controller=(ContinuousRouter, {}),
-             num_vehicles=20)
+             num_vehicles=22)
 
 sim_params = SumoParams(sim_step=0.1, render=True)
 
-initial_config = InitialConfig(spacing="uniform", bunching=40)
+initial_config = InitialConfig(spacing="random", bunching=40)
 
 env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
 
@@ -319,7 +276,7 @@ additional_net_params = ADDITIONAL_NET_PARAMS.copy()
 net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
-    exp_tag='circular_intersection',
+    exp_tag='test_network',
     env_name=AccelEnv,
     network=myNetwork,
     simulator='traci',

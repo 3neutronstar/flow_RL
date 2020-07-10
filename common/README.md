@@ -8,7 +8,7 @@
 ## How to Use
 
 '''shell script
-python simulate.py "test"
+python simulate.py "test
 '''
 This examples is for test the simulate.py for non-RL problem.
 
@@ -26,7 +26,7 @@ where `EXP_CONFIG` is the name of the experiment configuration file, as located 
 
 ## RL examples
 
-### RLlib
+### RLlib (for single and multi agent)
 
 ```shell script
 python train.py EXP_CONFIG --rl_trainer "rllib"
@@ -34,9 +34,9 @@ python train.py EXP_CONFIG --rl_trainer "rllib"
 
 where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent` or `exp_configs/rl/multiagent.`
 
-### stable-baselines
+### stable-baselines3
 
-traffic light agents being trained through RL algorithms provided by OpenAI _stable-baselines_.
+traffic light agents being trained through RL algorithms provided by OpenAI _stable-baselines3_.
 
 ```shell script
 python simulate.py EXP_CONFIG --rl_trainer "stable-baselines"

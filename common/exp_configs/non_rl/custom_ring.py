@@ -6,7 +6,7 @@ from flow.networks.ring import RingNetwork, ADDITIONAL_NET_PARAMS
 from flow.networks import Network
 import numpy as np
 from numpy import pi, sin, cos, linspace
-from Network.ring_intest import RingNetwork_intest
+from Network.custom_ring import RingNetwork_custom
 
 vehicles = VehicleParams()
 vehicles.add(veh_id="human",
@@ -26,11 +26,11 @@ net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
     # name of the experiment
-    exp_tag='ring_intest',
+    exp_tag='custom_ring',
     # name of the flow environment the experiment is running on
     env_name=AccelEnv,
     # name of the network class the experiment is running on
-    network=RingNetwork_intest,  # RingNetwork_intest
+    network=RingNetwork_custom,  # RingNetwork_custom
     # simulator that is used by the experiment
     simulator='traci',
     # sumo-related parameters (see flow.core.params.SumoParams)

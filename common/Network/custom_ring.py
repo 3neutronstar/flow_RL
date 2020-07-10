@@ -1,20 +1,22 @@
 from flow.networks import Network
 import numpy as np
-from numpy import pi, sin, cos, linspace
+import sys
+import queue
 
 
-class RingNetwork_intest(Network):
+class RingNetwork_custom(Network):
     pass
 
 
 ADDITIONAL_NET_PARAMS = {
     "length": 40,
-    "num_lanes": 1,
+    "lanes": 1,
     "speed_limit": 30,
 }
 
 
-class RingNetwork_intest(RingNetwork_intest):
+class RingNetwork_custom(RingNetwork_custom):
+
     def specify_nodes(self, net_params):
         r = net_params.additional_params["length"]
         nodes = [{"id": "0", "x": 0, "y": +r},
@@ -33,6 +35,7 @@ class RingNetwork_intest(RingNetwork_intest):
         resolution = net_params.additional_params["resolution"]
         edgelen = length
         # this will let us control the number of lanes in the network
+        #lanes = net_params.additional_params["num_lanes"]
         # speed limit of vehicles in the network
         speed_limit = net_params.additional_params["speed_limit"]
         # L: left, R: right, U: Up D:Down
@@ -50,8 +53,10 @@ class RingNetwork_intest(RingNetwork_intest):
                                   "numLanes": damg[n_cols][n_rows],
                                   "speed": speed_limit,
                                   "length": edgelen,
+
                                   # if you want to customize call seperately
                                   })
+
         return edges
 
     def specify_routes(self, net_params):
@@ -61,27 +66,40 @@ class RingNetwork_intest(RingNetwork_intest):
                "e_3_0": ["e_3_0", "e_0_1", "e_1_2", "e_2_3"]}
 
         return rts
+
     # def specify_routes(self, net_params):
     #     damg = np.array([[0, 1, 0, 0],
     #                      [0, 0, 1, 0],
     #                      [0, 0, 0, 1],
     #                      [1, 0, 0, 0]])
-    #     damg_cols = damg.shape[0]
-    #     damg_rows = damg.shape[1]
-    #     import queue
-    #     route[damg_cols][damg_rows] = [queue.Queue(damg_cols)]
-    #     for n_cols in range(0, damg_cols):
-    #         for n_rows in range(0, damg_cols):
-    #             if(damg[n_cols][n_rows] > 0):
-    #                 route[n_cols][n_rows].put(str("e_"+n_cols+"_"+n_rows))
-    #     for n_cols in range(0, damg_cols):
-    #         for n_rows in range(0, damg_cols):
-    #             sum_row = 0
-    #             for idx in range(0, damg_cols):
-    #                 sum_row += idx
-    #             route_array = []
-    #             while np.route[n_cols][n_rows].empty:
-    #                 route_array.append(np.route[n_cols][n_rows].get)
-    #             start_edge = str("e_"+n_cols+"_"+n_rows)
-    #             rts = {start_edge: [(route_array, 1/sum_row)]}
+    #     damg_rows = damg.shape[0]
+    #     damg_cols = damg.shape[1]
+
+    #     route = np.zeros((damg_rows, damg_cols), dtype=object)
+
+    #     for n_rows in range(0, damg_cols):
+    #         for n_cols in range(0, damg_cols):
+    #             if(damg[n_rows][n_cols] > 0):
+    #                 q = queue.Queue(damg_cols)
+    #                 route[n_rows][n_cols] = q
+    #                 route[n_rows][n_cols].put(
+    #                     str("e_"+str(n_rows)+"_"+str(n_cols)))
+
+    #     rts = {}
+    #     sum_row = 0
+    #     for n_rows in range(0, damg_rows):
+    #         for n_cols in range(0, damg_cols):
+    #             sum_row += damg[n_rows][n_cols]
+    #             if n_rows != n_cols:
+    #                 route_array = []
+    #                 if route[n_rows][n_cols] != 0:
+    #                     # while route[n_rows][n_cols].empty() or route[n_rows][n_cols] != 0:
+    #                     while route[n_rows][n_cols].qsize():
+    #                         route_array.append(
+    #                             route[n_rows][n_cols].get_nowait())
+    #                 start_edge = str("e_"+str(n_rows)+"_"+str(n_cols))
+
+    #                 rts[start_edge] = [(route_array)]
+    #             else:
+    #                 continue
     #     return rts

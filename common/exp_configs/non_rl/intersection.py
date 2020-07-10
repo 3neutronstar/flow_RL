@@ -1,3 +1,4 @@
+
 from flow.controllers import IDMController, ContinuousRouter
 from flow.core.params import SumoParams, EnvParams, InitialConfig, NetParams
 from flow.core.params import VehicleParams
@@ -9,18 +10,11 @@ from numpy import pi, sin, cos, linspace
 from Network.intersection_network import IntersectionNetwork
 
 
-ADDITIONAL_NET_PARAMS = {
-    "st_line": 40,
-    "num_lanes": 1,
-    "speed_limit": 30,
-}
-
-
 vehicles = VehicleParams()
 vehicles.add(veh_id="human",
              acceleration_controller=(IDMController, {}),
              routing_controller=(ContinuousRouter, {}),
-             num_vehicles=14)
+             num_vehicles=18)
 
 sim_params = SumoParams(sim_step=0.1, render=True)
 
@@ -28,7 +22,12 @@ initial_config = InitialConfig(spacing="uniform", bunching=40)
 
 env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
 
-additional_net_params = ADDITIONAL_NET_PARAMS.copy()
+additional_net_params = {
+    "length": 40,
+    "lanes": 1,
+    "speed_limit": 30,
+    "resolution": 40,
+}
 net_params = NetParams(additional_params=additional_net_params)
 
 flow_params = dict(
