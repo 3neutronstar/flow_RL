@@ -1,31 +1,68 @@
-# flow_RL
+# flow-autonomous-driving
 
-Reinforcement Learning Practice for Multi-Agent Autonomous vehicle in BMIL
+### Requirement(Installment)
 
-## 1.Folder List
+- anaconda : https://anaconda.com/
+- flow-project : https://github.com/flow-project/flow
+- ray-project(rllib) : https://github.com/ray-project/ray (need at least 0.8.6 is needed)
+- pytorch : https://pytorch.org/
+## How to Use
 
-1. Minsoo Kang
-   - Example.py
-   - RL_ring.py (directory 'data'is created by this file)
-   - ring.py
-2. Gihong Lee
-   - example.py
-3. Hyunju Lim
-   - example.py
-4. commom (this is for share)
-   - rectangular_network.py : test making road
+## non-RL examples
 
-If you add file please write down the name of it. behind your folder
+```shell script
+python simulate.py EXP_CONFIG
+```
 
-## 2.Rule
+where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/non_rl.`
 
-- Always write ADT
-- Commit carefully
+If you want to run with options, use
+```shell script
+ python simulate.py EXP_CONFIG --num_runs n --no_render --gen_emission
+```
 
-# Contributer
+## RL examples
 
-Soongsil University BMIL LAB
+### RLlib (for multiagent and single agent)
 
-- Minsoo Kang
-- Gihong Lee
-- Hyunju Lim
+```shell script
+python train_rllib.py EXP_CONFIG
+```
+
+where `EXP_CONFIG` is the name of the experiment configuration file, as located in `exp_configs/rl/singleagent` or `exp_configs/rl/multiagent.`
+
+### stable-baselines3 (for only single agent) -> deprecated
+
+traffic light agents being trained through RL algorithms provided by OpenAI _stable-baselines3_ by pytorch.
+
+```shell script
+python train_stablebaselines3.py EXP_CONFIG
+```
+
+## OSM - Output (Open Street Map)
+
+If you want to use osm file for making network, _map.osm_ file should replace same name of file in 'Network' directory.
+You want to see their results, run this code.
+
+```shell script
+python simulate.py osm_test
+```
+
+After that, If you want to see those output file(XML), you could find in `~/flow/flow/core/kernel/debug/cfg/.net.cfg`
+
+
+## Visualizing
+If you want to visualizing after training by rllib(ray), 
+- First, ```conda activate flow``` to activate flow environment.
+- Second,
+```shell script
+python ~/flow-autonomous-driving/visualizer_rllib.py 
+~/home/user/ray_results/EXP_CONFIG/experiment_name/ number_of_checkpoints
+```
+
+## Contributors
+_BMIL in Soongsil Univ._
+Prof. Kwon (Minhae Kwon), 
+Minsoo Kang, 
+Gihong Lee, 
+Hyeonju Lim

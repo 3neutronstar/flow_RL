@@ -1,0 +1,95 @@
+{
+    "env": {
+        "additional_params": {},
+        "clip_actions": true,
+        "evaluate": false,
+        "horizon": Infinity,
+        "sims_per_step": 1,
+        "warmup_steps": 0
+    },
+    "env_name": "flow.envs.test.TestEnv",
+    "exp_tag": "osm_test",
+    "initial": {
+        "additional_params": {},
+        "bunching": 0,
+        "edges_distribution": "all",
+        "lanes_distribution": Infinity,
+        "min_gap": 0,
+        "perturbation": 0.0,
+        "shuffle": false,
+        "spacing": "uniform",
+        "x0": 0
+    },
+    "net": {
+        "additional_params": {},
+        "inflows": {
+            "_InFlows__flows": []
+        },
+        "osm_path": "./Network/map.osm",
+        "template": null
+    },
+    "network": "Network.osm_network.OsmNetwork",
+    "sim": {
+        "color_by_speed": false,
+        "emission_path": "./data",
+        "force_color_update": false,
+        "lateral_resolution": null,
+        "no_step_log": true,
+        "num_clients": 1,
+        "overtake_right": false,
+        "port": null,
+        "print_warnings": true,
+        "pxpm": 2,
+        "render": true,
+        "restart_instance": false,
+        "save_render": false,
+        "seed": null,
+        "show_radius": false,
+        "sight_radius": 25,
+        "sim_step": 0.1,
+        "teleport_time": -1,
+        "use_ballistic": false
+    },
+    "simulator": "traci",
+    "veh": [
+        {
+            "acceleration_controller": [
+                "SimCarFollowingController",
+                {}
+            ],
+            "car_following_params": {
+                "controller_params": {
+                    "accel": 2.6,
+                    "carFollowModel": "IDM",
+                    "decel": 4.5,
+                    "impatience": 0.5,
+                    "maxSpeed": 30,
+                    "minGap": 2.5,
+                    "sigma": 0.5,
+                    "speedDev": 0.1,
+                    "speedFactor": 1.0,
+                    "tau": 1.0
+                },
+                "speed_mode": 25
+            },
+            "initial_speed": 0,
+            "lane_change_controller": [
+                "SimLaneChangeController",
+                {}
+            ],
+            "lane_change_params": {
+                "controller_params": {
+                    "laneChangeModel": "LC2013",
+                    "lcCooperative": "1.0",
+                    "lcKeepRight": "1.0",
+                    "lcSpeedGain": "1.0",
+                    "lcStrategic": "1.0"
+                },
+                "lane_change_mode": 512
+            },
+            "num_vehicles": 1,
+            "routing_controller": null,
+            "veh_id": "human"
+        }
+    ]
+}
