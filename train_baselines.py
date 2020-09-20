@@ -35,8 +35,8 @@ def parse_args(args):
         help='Name of the experiment configuration file, as located in '
              'exp_configs/rl/singleagent or exp_configs/rl/multiagent.')
     
-    parser.add_argument(  # for rllib
-        '--algorithm', type=str, default="PPO",
+    parser.add_argument(  # for stable-baselines3
+        '--algorithm', type=str, default="DDPG",
     )  # choose algorithm in order to use
     parser.add_argument(
         '--num_cpus', type=int, default=1,
@@ -57,7 +57,10 @@ def parse_args(args):
 def run_model_stablebaseline(flow_params,
                              num_cpus=1,
                              rollout_size=50,
-                             num_steps=50):
+                             num_steps=50,
+                             algorithm="ppo",
+                             exp_config=None
+                             ):
     """Run the model for num_steps if provided.
     Parameters
     ----------
@@ -76,7 +79,6 @@ def run_model_stablebaseline(flow_params,
         the trained model
     """
     from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
-    from stable_baselines3 import PPO
 
     if num_cpus == 1:
         constructor = env_constructor(params=flow_params, version=0)()
@@ -85,15 +87,24 @@ def run_model_stablebaseline(flow_params,
     else:
         env = SubprocVecEnv([env_constructor(params=flow_params, version=i)
                              for i in range(num_cpus)])
+    if algorithm=="PPO":
+        from stable_baselines3 import PPO
+        train_model = PPO('MlpPolicy', env, verbose=1, n_steps=rollout_size)
+        train_model.learn(total_timesteps=num_steps)
+        return train_model
 
-    train_model = PPO('MlpPolicy', env, verbose=1, n_steps=rollout_size)
-    train_model.learn(total_timesteps=num_steps)
-    return train_model
+    elif algorithm =="DDPG":
+        from stable_baselines3 import DDPG
+        train_model = DDPG('MlpPolicy', env, verbose=1,
+                            n_episodes_rollout=rollout_size,
+                            learning_starts=3000,
+                            tensorboard_log='tensorboard_ddpg')
+        train_model.learn(total_timesteps=num_steps)
+        return train_model
 
 def train_stable_baselines(submodule, flags):
     """Train policies using the PPO algorithm in stable-baselines."""
     from stable_baselines3.common.vec_env import DummyVecEnv
-    from stable_baselines3 import PPO
 
     flow_params = submodule.flow_params
     # Path to the saved files
@@ -102,8 +113,9 @@ def train_stable_baselines(submodule, flags):
 
     # Perform training.
     print('Beginning training.')
+    print('Algorithm :', flags.algorithm)
     model = run_model_stablebaseline(
-        flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps)
+        flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps,flags.algorithm,flags.exp_config)
 
     # Save the model to a desired folder and then delete it to demonstrate
     # loading.
@@ -120,7 +132,12 @@ def train_stable_baselines(submodule, flags):
 
     # Replay the result by loading the model
     print('Loading the trained model and testing it out!')
-    model = PPO.load(save_path)
+    if flags.exp_config.lower()=="ppo":
+        from stable_baselines3 import PPO
+        model = PPO.load(save_path)
+    elif flags.exp_config.lower()=="ddpg":
+        from stable_baselines3 import DDPG
+        model = DDPG.load(save_path)
     flow_params = get_flow_params(os.path.join(path, result_name) + '.json')
     flow_params['sim'].render = True
     env = env_constructor(params=flow_params, version=0)()
