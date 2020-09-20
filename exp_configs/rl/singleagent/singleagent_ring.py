@@ -33,10 +33,9 @@ vehicles.add(
     acceleration_controller=(RLController, {}),
     routing_controller=(ContinuousRouter, {}),
     num_vehicles=1)
-
 flow_params = dict(
     # name of the experiment
-    exp_tag="stabilizing_the_ring",
+    exp_tag="singleagent_ring",
 
     # name of the flow environment the experiment is running on
     env_name=WaveAttenuationPOEnv,
@@ -83,5 +82,5 @@ flow_params = dict(
 
     # parameters specifying the positioning of vehicles upon initialization/
     # reset (see flow.core.params.InitialConfig)
-    initial=InitialConfig(),
+    initial=InitialConfig(spacing='random'),
 )

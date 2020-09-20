@@ -12,6 +12,11 @@ from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
 from flow.utils.registry import make_create_env
 from Experiment.experiment import Experiment
+import getpass
+
+
+
+
 
 
 def parse_args(args):
@@ -40,10 +45,7 @@ def parse_args(args):
     )  # choose algorithm in order to use
     parser.add_argument(
         '--num_cpus', type=int, default=1,
-    )  # How many CPUs to use
-    parser.add_argument(  # how many times you want to learn
-        '--num_steps', type=int, default=1500,  # iteration ->deprecated
-    )  # How many total steps to perform learning over
+    )  # How many CPUs to usedh r
     parser.add_argument(  # batch size
         '--rollout_size', type=int, default=100,
     )  # How many steps are in a training batch.
@@ -55,7 +57,6 @@ def parse_args(args):
         action='store_true',
     )  # Specifies whether to run the simulation during runtime.
     return parser.parse_known_args(args)[0]
-# rllib
 
 
 def setup_exps_rllib(flow_params,
@@ -78,55 +79,125 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = n_cpus
-        # config["gamma"] = 0.99  # discount rate - 1
-        # config["use_gae"] = True  # truncated
-        config["lambda"] = 0.97  # truncated value
-        # config["kl_target"] = 0.02  # d_target
-        # # M is default value -->minibatch size (sgd_minibatch_size)
-        # # K epoch with the number of updating theta
-        # config["num_sgd_iter"] = 15
-        # # horizon: T train time steps (T time steps fixed-length trajectory)
-        config["sgd_minibatch_size"] = 128
-        # config["clip_param"] = 0.2
-        # config["horizon"] = horizon
-        # config["sgd_minibatch_size"] = 128
-        config['exploration_config']["type"]="GaussianNoise"
-        config['exploration_config']["final_scale"]=0.05
-        config['exploration_config']["initial_scale"]=1.0
-        config['exploration_config']["scale_timesteps"]=100000
-        config['exploration_config']["random_timesteps"]=1000
-        config['exploration_config']["stddev"]=0.1
+        config["horizon"] = horizon
+        
+        if flags.exp_config== 'singleagent_ring':
+            config["gamma"] = 0.99  # discount rate
+            config["use_gae"] = True  # truncated
+            config["lambda"] = 0.97  # truncated value
+            config["kl_target"] = 0.02  # d_target
+            config["num_sgd_iter"] = 15
+            config["sgd_minibatch_size"] = 1024
+            config['lr']=5e-7
+            config["clip_param"] = 0.2
+
+        elif flags.exp_config=='singleagent_figure_eight':
+            config['sgd_minibatch_size']=64
+            config["clip_param"] = 0.2
+            #Exploration
+            config['exploration_config']["type"] = "GaussianNoise"
+            config['exploration_config']["initial_scale"] = 1.0
+            config['exploration_config']["final_scale"] = 0.02
+            config['exploration_config']["scale_timesteps"] = 1000000
+            config['exploration_config']["random_timesteps"] = 1000
+            config['exploration_config']["stddev"] = 0.1
+        
 
     elif flags.algorithm.lower() == "ddpg":
         from ray.rllib.agents.ddpg.ddpg import DEFAULT_CONFIG
         alg_run = "DDPG"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config['n_step'] = 2
         config["num_workers"] = 1
         # model
-        config['actor_hiddens'] = [64, 64]
-        config['actor_lr'] = 0.0001  # in article 'ddpg'
-        config['critic_lr'] = 0.0005
-        config['critic_hiddens'] = [64, 64]
-        config['gamma'] = 0.99
-        config['model']['fcnet_hiddens'] = [256, 256]
-        config['lr']=1e-4
-        # exploration
-        config['exploration_config']['final_scale'] = 0.02
-        config['exploration_config']['scale_timesteps'] = 600000
-        config['exploration_config']['ou_base_scale'] = 0.1
-        config['exploration_config']['ou_theta'] = 0.15
-        config['exploration_config']['ou_sigma'] = 0.2
-        # optimization
-        config['tau'] = 0.002
-        config['l2_reg'] = 1e-6
-        config['train_batch_size'] = 64
-        config['learning_starts'] = 1500
-        # evaluation
-        #config['evaluation_interval'] = 5
-        config['buffer_size'] = 50000
-        config['timesteps_per_iteration'] = 3000
+        if flags.exp_config== 'singleagent_ring':
+            config['n_step'] = 1
+            config['actor_hiddens'] = [64, 64]
+            config['actor_lr'] = 0.0001  # in article 'ddpg'
+            config['critic_lr'] = 0.0001
+            config['critic_hiddens'] = [64, 64]
+            config['gamma'] = 0.99
+            config['model']['fcnet_hiddens'] = [64, 64]
+            config['lr']=1e-4
+            # exploration
+            config['exploration_config']['final_scale'] = 0.02
+            config['exploration_config']['scale_timesteps'] = 2100000
+            config['exploration_config']['ou_base_scale'] = 0.1
+            config['exploration_config']['ou_theta'] = 0.15
+            config['exploration_config']['ou_sigma'] = 0.2
+            # optimization
+            config['tau'] = 0.001
+            config['l2_reg'] = 1e-6
+            config['train_batch_size'] = 64
+            config['learning_starts'] = 3000
+            # evaluation
+            #config['evaluation_interval'] = 5
+            config['buffer_size'] = 300000 #3e5
+            config['timesteps_per_iteration'] = 3000
+            config['prioritized_replay']=False
+            config["prioritized_replay_beta_annealing_timesteps"]=2200000
+            config['final_prioritized_replay_beta']=0.01
+
+        elif flags.exp_config=='singleagent_figure_eight':
+            config['n_step'] = 1
+            config['actor_hiddens'] = [400, 300]
+            config['actor_lr'] = 0.00001  # in article 'ddpg'
+            config['critic_lr'] = 0.0001
+            config['critic_hiddens'] = [400, 300]
+            config['gamma'] = 0.99
+            config['model']['fcnet_hiddens'] = [256, 256]
+            config['lr']=1e-5
+            #exploration
+            config['exploration_config']['final_scale'] = 0.02
+            config['exploration_config']['scale_timesteps'] = 1500000
+            config['exploration_config']["initial_scale"] = 1.0
+            config['exploration_config']["random_timesteps"] = 1000
+            config['exploration_config']["stddev"] = 0.1
+            del config['exploration_config']['ou_base_scale']
+            del config['exploration_config']['ou_theta']
+            del config['exploration_config']['ou_sigma']
+            config['exploration_config']['type']='GaussianNoise'
+            # optimization
+            config['tau'] = 0.002
+            config['l2_reg'] = 1e-6
+            config['train_batch_size'] = 64
+            config['learning_starts'] = 0
+            # evaluation
+            config['timesteps_per_iteration'] = 3000
+            #config['evaluation_interval'] = 5
+            config['buffer_size'] = 300000 #3e5
+            config["prioritized_replay_beta_annealing_timesteps"]=2000000
+            config['prioritized_replay']=True
+            config['final_prioritized_replay_beta']=0.4
+
+            config['prioritized_replay_eps']=0.000001
+            config['clip_rewards']=False
+        else:# merge
+            config['n_step'] = 1
+            config['actor_hiddens'] = [64, 64]
+            config['actor_lr'] = 0.0001  # in article 'ddpg'
+            config['critic_lr'] = 0.0001
+            config['critic_hiddens'] = [64, 64]
+            config['gamma'] = 0.99
+            config['model']['fcnet_hiddens'] = [64, 64]
+            config['lr']=1e-5
+            # exploration
+            config['exploration_config']['final_scale'] = 0.05
+            config['exploration_config']['scale_timesteps'] = 1500000
+            config['exploration_config']['ou_base_scale'] = 0.1
+            config['exploration_config']['ou_theta'] = 0.15
+            config['exploration_config']['ou_sigma'] = 0.2
+            # optimization
+            config['tau'] = 0.002
+            config['l2_reg'] = 1e-6
+            config['train_batch_size'] = 64
+            config['learning_starts'] = 3000
+            # evaluation
+            #config['evaluation_interval'] = 5
+            config['buffer_size'] = 300000 #3e5
+            config['timesteps_per_iteration'] = 3000
+            config['prioritized_replay']=False
+
     
     #common config
     config['framework']='torch'
@@ -191,8 +262,8 @@ def train_rllib(submodule, flags):
         flags.num_steps = 1500
         checkpoint_freq = 100
     elif alg_run=="DDPG":
-        flags.num_steps = 200
-        checkpoint_freq = 20
+        flags.num_steps = 800
+        checkpoint_freq = 40
     
     exp_config = {
         "run": alg_run,
@@ -226,14 +297,51 @@ def train_rllib(submodule, flags):
                 #    continue
         else:
             print(key, ":", exp_config["config"][key])
+    # change config data at the end of training (need to record time value to fix it)
+    import time
+    time.time()
+    file_path_day=time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    file_path_hour=time.strftime('%H-%M-%S', time.localtime(time.time()))
+    experiment_json='experiment_state-'+file_path_day+'_'+file_path_hour+'.json'
+    # print experiment.json information
     print("=========================================")
     run_experiments({flow_params["exp_tag"]: exp_config})
     stop_time = timeit.default_timer()
     run_time = stop_time-start_time
     print("Training is Finished")
     print("total runtime: ", run_time)
-    print("restore path: ",flags.checkpoint_path)
 
+    # modify params.json for testing that trained well
+    saved_experiment_json_path=os.path.join("/home",getpass.getuser(),"ray_results",flow_params["exp_tag"],experiment_json)
+
+    if os.path.exists(os.path.dirname(saved_experiment_json_path)) ==False:
+        if int(experiment_json[-6]=="9"):
+            experiment_json[-7]=str(int(experiment_json[-7])+1)
+            experiment_json[-6]="0"
+        else:
+            experiment_json[-6]=str(int(experiment_json[-6])+1)
+        saved_experiment_json_path=os.path.join("/home",getpass.getuser(),"ray_results",flow_params["exp_tag"],experiment_json)
+    # check file is existed
+    with open(saved_experiment_json_path,'r') as f:
+        experiment_data=json.load(f)
+        saved_params_json_path=os.path.join(experiment_data["checkpoints"][0]['logdir'],"params.json")
+        print("params.json is located at : ",saved_params_json_path)
+    #params.json open and modify value of exploration and ringlength for visualizing
+    with open(saved_params_json_path,'r')as fin:
+        params_data=json.load(fin)
+    
+    params_data['explore']=False
+    paramStr=params_data["env_config"]["flow_params"]
+    #fix ring length option
+    if flags.exp_config=="singleagent_ring":
+        paramStr=paramStr.replace("220","260")
+        paramStr=paramStr.replace("270","260")
+
+    with open(saved_params_json_path,'w')as fout:
+        params_data["env_config"]["flow_params"]=paramStr
+        json.dump(params_data,fout,indent="\t")
+    print("Visualizing is Now Available")
+    #Done
 
 def main(args):
     """Perform the training operations."""
