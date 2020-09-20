@@ -99,7 +99,7 @@ def run_model_stablebaseline(flow_params,
                             n_episodes_rollout=rollout_size,
                             learning_starts=3000,
                             tensorboard_log='tensorboard_ddpg')
-        train_model.learn(total_timesteps=num_steps)
+        train_model.learn(total_timesteps=num_steps,log_interval=2,eval_log_path='ddpg_log',reset_num_timesteps=False)
         return train_model
 
 def train_stable_baselines(submodule, flags):
