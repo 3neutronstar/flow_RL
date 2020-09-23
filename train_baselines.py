@@ -42,10 +42,10 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
         help='How many CPUs to use')
     parser.add_argument(
-        '--num_steps', type=int, default=1500000,
+        '--num_steps', type=int, default=600,
         help='How many total steps to perform learning over')
     parser.add_argument(
-        '--rollout_size', type=int, default=3000,
+        '--rollout_size', type=int, default=600,
         help='How many steps are in a training batch.')
     parser.add_argument(
         '--checkpoint_path', type=str, default=None,
@@ -91,6 +91,7 @@ def run_model_stablebaseline(flow_params,
         from stable_baselines3 import PPO
         train_model = PPO('MlpPolicy', env, verbose=1, n_steps=rollout_size)
         train_model.learn(total_timesteps=num_steps)
+        print("Learning Process is Done.")
         return train_model
 
     elif algorithm =="DDPG":
@@ -99,7 +100,8 @@ def run_model_stablebaseline(flow_params,
                             n_episodes_rollout=rollout_size,
                             learning_starts=3000,
                             tensorboard_log='tensorboard_ddpg')
-        train_model.learn(total_timesteps=num_steps,log_interval=2,eval_log_path='ddpg_log',reset_num_timesteps=False)
+        train_model.learn(total_timesteps=num_steps,log_interval=2,eval_log_path='ddpg_log')
+        print("Learning Process is Done.")
         return train_model
 
 def train_stable_baselines(submodule, flags):
@@ -170,10 +172,6 @@ def main(args):
         multiagent = False
     elif hasattr(module_ma, flags.exp_config):
         submodule = getattr(module_ma, flags.exp_config)
-        assert flags.rl_trainer.lower() in ["rllib", "h-baselines"], \
-            "Currently, multiagent experiments are only supported through "\
-            "RLlib. Try running this experiment using RLlib: " \
-            "'python train.py EXP_CONFIG'"
         multiagent = True
     else:
         raise ValueError("Unable to find experiment config.")
