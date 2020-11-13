@@ -82,7 +82,7 @@ class LanechangeNetwork(LanechangeNetwork):
                 'from':'left_intersection',
                 'to':'up_intersection',
                 'fromLane':2,
-                'toLane':0,
+                'toLane':2,
             }]
         conn+=[{
                 'from':'left_intersection',
