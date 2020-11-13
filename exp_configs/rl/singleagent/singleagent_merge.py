@@ -81,7 +81,7 @@ inflow.add(
 
 flow_params = dict(
     # name of the experiment
-    exp_tag="stabilizing_open_network_merges",
+    exp_tag="singleagent_merge",
 
     # name of the flow environment the experiment is running on
     env_name=MergePOEnv,

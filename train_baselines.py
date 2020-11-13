@@ -54,6 +54,8 @@ def parse_args(args):
     return parser.parse_known_args(args)[0]
 
 
+
+
 def run_model_stablebaseline(flow_params,
                              num_cpus=1,
                              rollout_size=50,
@@ -96,11 +98,23 @@ def run_model_stablebaseline(flow_params,
 
     elif algorithm =="DDPG":
         from stable_baselines3 import DDPG
-        train_model = DDPG('MlpPolicy', env, verbose=1,
+        from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise
+        import numpy as np
+        if exp_config=='singleagent_figure_eight':
+            train_model = DDPG('MlpPolicy', env, verbose=1,
+                                n_episodes_rollout=rollout_size,
+                                learning_starts=3000,
+                                learning_rate=0.0001,
+                                action_noise=OrnsteinUhlenbeckActionNoise(mean=np.zeros(1),sigma=0.15*np.ones(1),initial_noise=0.7*np.ones(1)),
+                                tensorboard_log='tensorboard_ddpg',
+                                device='cuda',
+                                )
+        else:
+            train_model = DDPG('MlpPolicy', env, verbose=1,
                             n_episodes_rollout=rollout_size,
                             learning_starts=3000,
                             tensorboard_log='tensorboard_ddpg')
-        train_model.learn(total_timesteps=num_steps,log_interval=2,eval_log_path='ddpg_log')
+        train_model.learn(total_timesteps=num_steps,log_interval=2,eval_log_path='ddpg_log',eval_freq=2)
         print("Learning Process is Done.")
         return train_model
 

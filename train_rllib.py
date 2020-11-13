@@ -78,9 +78,10 @@ def setup_exps_rllib(flow_params,
         alg_run = "PPO"
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
-        config["num_workers"] = n_cpus
+        config["num_workers"] = 2
         config["horizon"] = horizon
-        
+        config['num_gpus']=1
+        config['num_cpus_per_worker']=1
         if flags.exp_config== 'singleagent_ring':
             config["gamma"] = 0.99  # discount rate
             config["use_gae"] = True  # truncated
@@ -109,6 +110,7 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = 1
+        #config['num_gpus']=1
         # model
         if flags.exp_config== 'singleagent_ring':
             config['n_step'] = 1
@@ -151,7 +153,7 @@ def setup_exps_rllib(flow_params,
             config['exploration_config']['final_scale'] = 0.02
             config['exploration_config']['scale_timesteps'] = 1500000
             config['exploration_config']["initial_scale"] = 1.0
-            config['exploration_config']["random_timesteps"] = 1000
+            config['exploration_config']["random_timesteps"] = 3000
             config['exploration_config']["stddev"] = 0.1
             del config['exploration_config']['ou_base_scale']
             del config['exploration_config']['ou_theta']
@@ -161,13 +163,13 @@ def setup_exps_rllib(flow_params,
             config['tau'] = 0.002
             config['l2_reg'] = 1e-6
             config['train_batch_size'] = 64
-            config['learning_starts'] = 0
+            config['learning_starts'] = 3000
             # evaluation
             config['timesteps_per_iteration'] = 3000
             #config['evaluation_interval'] = 5
             config['buffer_size'] = 300000 #3e5
             config["prioritized_replay_beta_annealing_timesteps"]=2000000
-            config['prioritized_replay']=True
+            config['prioritized_replay']=False
             config['final_prioritized_replay_beta']=0.4
 
             config['prioritized_replay_eps']=0.000001
@@ -200,6 +202,7 @@ def setup_exps_rllib(flow_params,
 
     
     #common config
+
     config['framework']='torch'
     config['callbacks'] = {
         "on_episode_end": None,
@@ -256,7 +259,7 @@ def train_rllib(submodule, flags):
         flow_params, n_cpus, n_rollouts,
         policy_graphs, policy_mapping_fn, policies_to_train, flags)
 
-    ray.init(num_cpus=n_cpus + 1, object_store_memory=200 * 1024 * 1024)
+    ray.init(num_cpus=n_cpus + 1, num_gpus=1,object_store_memory=200 * 1024 * 1024)
     # checkpoint and num steps setting
     if alg_run=="PPO":
         flags.num_steps = 1500
