@@ -38,6 +38,13 @@ class LanechangeNetwork(LanechangeNetwork):
                 'length':after_intersection_length,
             },
             {
+                'id':'up_intersection_back',
+                'numLanes':lanes,
+                'from':'after_intersection_up',
+                'to':'center',
+                'length':after_intersection_length,
+            },
+            {
                 'id':'right_intersection',
                 'numLanes':lanes,
                 'from':'center',
@@ -52,33 +59,12 @@ class LanechangeNetwork(LanechangeNetwork):
                 'length':after_intersection_length,
             },
             {
-                'id':'left_intersection_back',
-                'numLanes':lanes,
-                'from':'center',
-                'to':'before_intersection',
-                'length':600,
-            },
-            {
-                'id':'up_intersection_back',
-                'numLanes':lanes,
-                'from':'after_intersection_up',
-                'to':'center',
-                'length':after_intersection_length,
-            },
-            {
-                'id':'right_intersection_back',
-                'numLanes':lanes,
-                'from':'after_intersection_right',
-                'to':'center',
-                'length':after_intersection_length,
-            },
-            {
                 'id':'down_intersection_back',
                 'numLanes':lanes,
                 'from':'after_intersection_down',
                 'to':'center',
                 'length':after_intersection_length,
-            },
+            }
         ]
         return edges
 
@@ -108,19 +94,46 @@ class LanechangeNetwork(LanechangeNetwork):
     
     def specify_routes(self,net_params):
         rts={
-            'left_intersection':[
-                (['right_intersection'],0.6),
-                (['up_intersection'],0.2),
-                (['down_intersection'],0.2)
+            'left_intersection':['left_intersection'
+                # (['left_intersection','right_intersection'],0.6),
+                # (['left_intersection','up_intersection'],0.2),
+                # (['left_intersection','down_intersection'],0.2)
             ],
             'right_intersection':['right_intersection'],
             'down_intersection':['down_intersection'],
             'up_intersection':['up_intersection'],
-            'right_intersection_back':['right_intersection_back'],
             'down_intersection_back':['down_intersection_back'],
             'up_intersection_back':['up_intersection_back'],
-            'left_intersection_back':['left_intersection_back'],
+            # 'human_left':[
+            #     (['left_intersection','up_intersection'],0.4),
+            #     (['left_intersection','right_intersection'],0.6)
+            #     ],
+            'human_center':[
+                (['left_intersection','right_intersection'],1)
+                ],
+            # 'human_right':[
+            #     (['left_intersection','down_intersection'],0.4),
+            #     (['left_intersection','right_intersection'],0.6)
+            #     ]
         }
         return rts
 
+    # def gen_custom_start_pos(self,cls,net_params,initial_config,num_vehicles):
+    #     # inital point of vehicle   
+    #     x0 = 6  # position of the first car
+    #     dx = 25  # distance between each car
+    #     start_lanes = []
+    #     start_pos= []
+    #     for k in range(num_vehicles):
+    #         if k<=20:
+    #             start_pos+=[('left_intersection',x0+k*dx)]
+    #             start_lanes+=[2]
+    #         elif k<=40:
+    #             start_pos+=[('left_intersection',x0+(k-20)*dx)]
+    #             start_lanes+=[1]
+    #         else:
+    #             start_pos+=[('left_intersection',x0+(k-40)*dx)]
+    #             start_lanes+=[0]
 
+
+    #     return start_pos, start_lanes

@@ -2,7 +2,7 @@ from flow.controllers import IDMController
 from flow.core.params import SumoParams, EnvParams, NetParams, InitialConfig, SumoLaneChangeParams
 from flow.core.params import VehicleParams, InFlows
 from flow.envs.ring.lane_change_accel import ADDITIONAL_ENV_PARAMS
-from Network.lanechange_network2 import LanechangeNetwork, ADDITIONAL_NET_PARAMS
+from Network.lanechange_network import LanechangeNetwork, ADDITIONAL_NET_PARAMS
 from flow.envs import LaneChangeAccelEnv
 from flow.controllers.base_routing_controller import BaseRouter
 from flow.controllers import ContinuousRouter
@@ -16,15 +16,20 @@ class LanechangeRouter(BaseRouter):
         veh_type=vehicles.get_type(veh_id)
         veh_edge = vehicles.get_edge(veh_id) #route
         veh_route=vehicles.get_route(veh_id)
-        if veh_edge=='left_intersection' :
+        if len(env.k.vehicle.get_route(self.veh_id)) == 0:
+            return None
+        elif veh_edge=='left_intersection' :
             if veh_type[6]=='r':
                 next_route=(veh_edge,'down_intersection')
             elif veh_type[6]=='c':
                 next_route=(veh_edge,'right_intersection')
             elif veh_type[6]=='l':
                 next_route=(veh_edge,'up_intersection')
+            # this occurs to inflowing vehicles, whose information is not added
+            # to the subscriptions in the first step that they departed
         else:
-            next_route=vehicles.get_route(veh_id)
+            return None
+            # next_route=[vehicles.get_edge(veh_id)]
         print(veh_id,", ",veh_type,": ",veh_edge)
         print(next_route,",,,",veh_route)
         return next_route
@@ -43,7 +48,7 @@ vehicles.add(
     ),
     routing_controller=(LanechangeRouter,{}),
     lane_change_controller=(SimLaneChangeController,{}),
-    num_vehicles=20)
+    num_vehicles=0)
 vehicles.add(
     veh_id="human_center",
     acceleration_controller=(IDMController, {}),
@@ -53,7 +58,7 @@ vehicles.add(
     ),
     lane_change_controller=(SimLaneChangeController,{}),
     routing_controller=(LanechangeRouter,{}),
-    num_vehicles=20)    
+    num_vehicles=0)    
 vehicles.add(
     veh_id="human_right",
     acceleration_controller=(IDMController, {}),
@@ -64,7 +69,7 @@ vehicles.add(
     ),
     routing_controller=(LanechangeRouter,{}),
     lane_change_controller=(SimLaneChangeController,{}),
-    num_vehicles=20)
+    num_vehicles=0)
 
 env_params = EnvParams(additional_params=ADDITIONAL_ENV_PARAMS)
 
@@ -127,7 +132,7 @@ flow_params = dict(
     # parameters specifying the positioning of vehicles upon initialization/
     # reset (see flow.core.params.InitialConfig)
     initial=InitialConfig(
-        spacing="custom",
+        spacing="uniform",
         shuffle=True,
     ),
 )
