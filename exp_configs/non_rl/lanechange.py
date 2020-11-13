@@ -19,7 +19,7 @@ class LanechangeRouter(BaseRouter):
         if len(env.k.vehicle.get_route(self.veh_id)) == 0:
             return None
 
-        elif veh_edge=='left_intersection' :
+        elif veh_edge=='left_intersection'and veh_route[-1]=='left_intersection':
             random_num=random.random()
             if random_num<=0.8:
                 if veh_type[6]=='r':
