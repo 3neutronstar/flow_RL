@@ -8,7 +8,7 @@ from flow.controllers.base_routing_controller import BaseRouter
 from flow.controllers import ContinuousRouter
 from flow.controllers.lane_change_controllers import SimLaneChangeController
 from flow.controllers.base_lane_changing_controller import BaseLaneChangeController
-
+import random
 class LanechangeRouter(BaseRouter):
     def choose_route(self,env):
         veh_id=self.veh_id
@@ -20,12 +20,16 @@ class LanechangeRouter(BaseRouter):
             return None
 
         elif veh_edge=='left_intersection' :
-            if veh_type[6]=='r':
-                next_route=(veh_edge,'down_intersection')
-            elif veh_type[6]=='c':
+            random_num=random.random()
+            if random_num<=0.8:
+                if veh_type[6]=='r':
+                    next_route=(veh_edge,'down_intersection')
+                elif veh_type[6]=='c':
+                    next_route=(veh_edge,'right_intersection')
+                elif veh_type[6]=='l':
+                    next_route=(veh_edge,'up_intersection')
+            else:
                 next_route=(veh_edge,'right_intersection')
-            elif veh_type[6]=='l':
-                next_route=(veh_edge,'up_intersection')
             # this occurs to inflowing vehicles, whose information is not added
             # to the subscriptions in the first step that they departed
         else:
