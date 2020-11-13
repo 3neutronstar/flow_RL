@@ -18,6 +18,7 @@ class LanechangeRouter(BaseRouter):
         veh_route=vehicles.get_route(veh_id)
         if len(env.k.vehicle.get_route(self.veh_id)) == 0:
             return None
+
         elif veh_edge=='left_intersection' :
             if veh_type[6]=='r':
                 next_route=(veh_edge,'down_intersection')
@@ -44,7 +45,6 @@ vehicles.add(
     lane_change_params=SumoLaneChangeParams(
         model="SL2015",
         lc_sublane=2.0,
-        lc_keep_left=10000000,
     ),
     routing_controller=(LanechangeRouter,{}),
     lane_change_controller=(SimLaneChangeController,{}),
@@ -65,7 +65,6 @@ vehicles.add(
     lane_change_params=SumoLaneChangeParams(
         model="SL2015",
         lc_sublane=2.0,
-        lc_keep_right=10000000,
     ),
     routing_controller=(LanechangeRouter,{}),
     lane_change_controller=(SimLaneChangeController,{}),
