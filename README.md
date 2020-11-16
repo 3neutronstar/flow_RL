@@ -174,8 +174,6 @@ After that, If you want to see those output file(XML), you could find in `~/flow
 
 
 ## Contributors
-_BMIL at Soongsil Univ._
-Prof. Kwon (Minhae Kwon), 
 Minsoo Kang, 
 Gihong Lee, 
 Hyeonju Lim
