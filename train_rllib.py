@@ -142,13 +142,13 @@ def setup_exps_rllib(flow_params,
 
         elif flags.exp_config=='singleagent_figure_eight':
             config['n_step'] = 1
-            config['actor_hiddens'] = [400, 300]
+            config['actor_hiddens'] = [32, 32]
             config['actor_lr'] = 0.00001  # in article 'ddpg'
             config['critic_lr'] = 0.0001
-            config['critic_hiddens'] = [400, 300]
+            config['critic_hiddens'] = [32, 32]
             config['gamma'] = 0.99
-            config['model']['fcnet_hiddens'] = [256, 256]
-            config['lr']=1e-5
+            config['model']['fcnet_hiddens'] = [64, 64]
+            config['lr']=1e-3
             #exploration
             config['exploration_config']['final_scale'] = 0.02
             config['exploration_config']['scale_timesteps'] = 1500000
