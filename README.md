@@ -89,7 +89,7 @@ If tensorboard is not installed, you can install with pip, by following command 
 Download related file for training and visualizing:<br/>
 ```shell script
 cd 
-git clone https://github.com/bmil-ssu/flow-autonomous-driving.git
+git clone https://github.com/3neutronstar/flow-autonomous-driving.git
 ```
 
 
