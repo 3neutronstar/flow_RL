@@ -112,14 +112,14 @@ def setup_exps_rllib(flow_params,
         config["num_workers"] = 1
         #config['num_gpus']=1
         # model
-        if flags.exp_config== 'singleagent_ring':
+        if flags.exp_config == 'singleagent_ring':
             config['n_step'] = 1
             config['actor_hiddens'] = [64, 64]
             config['actor_lr'] = 0.0001  # in article 'ddpg'
             config['critic_lr'] = 0.0001
             config['critic_hiddens'] = [64, 64]
             config['gamma'] = 0.99
-            config['model']['fcnet_hiddens'] = [64, 64]
+            config['model']['fcnet_hiddens'] = [128, 128]
             config['lr']=1e-4
             # exploration
             config['exploration_config']['final_scale'] = 0.02
@@ -140,44 +140,52 @@ def setup_exps_rllib(flow_params,
             config["prioritized_replay_beta_annealing_timesteps"]=2200000
             config['final_prioritized_replay_beta']=0.01
 
-        elif flags.exp_config=='singleagent_figure_eight':
-            config['n_step'] = 1
-            config['actor_hiddens'] = [32, 32]
-            config['actor_lr'] = 0.00001  # in article 'ddpg'
-            config['critic_lr'] = 0.0001
-            config['critic_hiddens'] = [32, 32]
+
+        elif flags.exp_config == 'singleagent_figure_eight':
+            config['n_step'] = 3
+            config['actor_hiddens'] = [400, 300]
+            config['actor_hidden_activation'] = 'relu'
+            config['actor_lr'] = 0.001  # in article 'ddpg'
+            config['critic_lr'] = 0.00001
+            config['critic_hiddens'] = [400, 300]
+            config['critic_hidden_activation'] = 'relu'
             config['gamma'] = 0.99
-            config['model']['fcnet_hiddens'] = [64, 64]
-            config['lr']=1e-3
-            #exploration
+            config['model']['fcnet_hiddens'] = [256, 256]
+            config['model']['fcnet_activation'] = 'tanh'
+            config['target_network_update_freq'] = 1 # change this
+            config['lr'] = 1e-5
+            # exploration
             config['exploration_config']['final_scale'] = 0.02
             config['exploration_config']['scale_timesteps'] = 1500000
-            config['exploration_config']["initial_scale"] = 1.0
-            config['exploration_config']["random_timesteps"] = 3000
+            config['exploration_config']["initial_scale"] = 0.7
+            config['exploration_config']["random_timesteps"] = 1000
             config['exploration_config']["stddev"] = 0.1
             del config['exploration_config']['ou_base_scale']
             del config['exploration_config']['ou_theta']
             del config['exploration_config']['ou_sigma']
-            config['exploration_config']['type']='GaussianNoise'
+            config['exploration_config']['type'] = 'GaussianNoise'
             # optimization
-            config['tau'] = 0.002
-            config['l2_reg'] = 1e-6
-            config['train_batch_size'] = 64
-            config['learning_starts'] = 3000
+            config['tau'] = 0.005
+            config['l2_reg'] = 1e-5
+            config['train_batch_size'] = 256
+            # each rollout worker has the train_batch_size = config['train_batch_size']/rollout_fragment_length
+            config['rollout_fragment_length'] = 1
+            config['learning_starts'] = 6000
             # evaluation
             config['timesteps_per_iteration'] = 3000
             #config['evaluation_interval'] = 5
             config['buffer_size'] = 300000 #3e5
-            config["prioritized_replay_beta_annealing_timesteps"]=2000000
-            config['prioritized_replay']=False
-            config['final_prioritized_replay_beta']=0.4
+            config["prioritized_replay_beta_annealing_timesteps"] = 2000000
+            config['prioritized_replay'] = True
+            config['final_prioritized_replay_beta'] = 0.4
+            config['prioritized_replay_eps'] = 0.00001
+            config['clip_rewards'] = False
 
-            config['prioritized_replay_eps']=0.000001
-            config['clip_rewards']=False
+
         else:# merge
             config['n_step'] = 1
             config['actor_hiddens'] = [64, 64]
-            config['actor_lr'] = 0.0001  # in article 'ddpg'
+            config['actor_lr'] = 0.001  # in article 'ddpg'
             config['critic_lr'] = 0.0001
             config['critic_hiddens'] = [64, 64]
             config['gamma'] = 0.99

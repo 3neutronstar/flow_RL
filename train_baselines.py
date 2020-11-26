@@ -10,7 +10,7 @@ import os
 import sys
 from time import strftime
 from copy import deepcopy
-
+import timeit
 from flow.core.util import ensure_dir
 from flow.utils.registry import env_constructor
 from flow.utils.rllib import FlowParamsEncoder, get_flow_params
@@ -42,7 +42,7 @@ def parse_args(args):
         '--num_cpus', type=int, default=1,
         help='How many CPUs to use')
     parser.add_argument(
-        '--num_steps', type=int, default=600,
+        '--num_steps', type=int, default=400,
         help='How many total steps to perform learning over')
     parser.add_argument(
         '--rollout_size', type=int, default=600,
@@ -106,15 +106,30 @@ def run_model_stablebaseline(flow_params,
                                 learning_starts=3000,
                                 learning_rate=0.0001,
                                 action_noise=OrnsteinUhlenbeckActionNoise(mean=np.zeros(1),sigma=0.15*np.ones(1),initial_noise=0.7*np.ones(1)),
+                                tau=0.005,
+                                batch_size=128,
                                 tensorboard_log='tensorboard_ddpg',
                                 device='cuda',
                                 )
         else:
             train_model = DDPG('MlpPolicy', env, verbose=1,
                             n_episodes_rollout=rollout_size,
-                            learning_starts=3000,
-                            tensorboard_log='tensorboard_ddpg')
-        train_model.learn(total_timesteps=num_steps,log_interval=2,eval_log_path='ddpg_log',eval_freq=2)
+                            learning_starts=1200,
+                            tensorboard_log='tensorboard_ddpg',
+                            learning_rate=0.0001,
+                            action_noise=OrnsteinUhlenbeckActionNoise(mean=np.zeros(1),sigma=0.15*np.ones(1),initial_noise=0.7*np.ones(1)),
+                            tau=0.005,
+                            batch_size=512,
+                            device='cpu',
+                            )
+        
+
+        from tensorboard_baselines.callbacks_ddpg import TensorboardCallback
+        train_model.learn(total_timesteps=num_steps,
+                          log_interval=2,eval_log_path='ddpg_log',eval_freq=2, 
+                          eval_freq=10,
+                          #callback=[TensorboardCallback],
+                          )
         print("Learning Process is Done.")
         return train_model
 
@@ -128,11 +143,18 @@ def train_stable_baselines(submodule, flags):
     result_name = '{}/{}'.format(exp_tag, strftime("%Y-%m-%d-%H:%M:%S"))
 
     # Perform training.
+    start_time = timeit.default_timer()
+    # print experiment.json information
+    print("=========================================")
     print('Beginning training.')
     print('Algorithm :', flags.algorithm)
     model = run_model_stablebaseline(
         flow_params, flags.num_cpus, flags.rollout_size, flags.num_steps,flags.algorithm,flags.exp_config)
 
+    stop_time = timeit.default_timer()
+    run_time = stop_time-start_time
+    print("Training is Finished")
+    print("total runtime: ", run_time)
     # Save the model to a desired folder and then delete it to demonstrate
     # loading.
     print('Saving the trained model!')
