@@ -89,7 +89,7 @@ def setup_exps_rllib(flow_params,
             config["kl_target"] = 0.02  # d_target
             config["num_sgd_iter"] = 15
             config["sgd_minibatch_size"] = 1024
-            config['lr']=5e-7
+            config['lr']=5e-7 
             config["clip_param"] = 0.2
 
         elif flags.exp_config=='singleagent_figure_eight':
@@ -110,7 +110,7 @@ def setup_exps_rllib(flow_params,
         agent_cls = get_agent_class(alg_run)
         config = deepcopy(agent_cls._default_config)
         config["num_workers"] = 1
-        #config['num_gpus']=1
+        # config['num_gpus']=1
         # model
         if flags.exp_config == 'singleagent_ring':
             config['n_step'] = 1
@@ -133,7 +133,7 @@ def setup_exps_rllib(flow_params,
             config['train_batch_size'] = 64
             config['learning_starts'] = 3000
             # evaluation
-            #config['evaluation_interval'] = 5
+            # config['evaluation_interval'] = 5
             config['buffer_size'] = 300000 #3e5
             config['timesteps_per_iteration'] = 3000
             config['prioritized_replay']=False
@@ -143,11 +143,11 @@ def setup_exps_rllib(flow_params,
 
         elif flags.exp_config == 'singleagent_figure_eight':
             config['n_step'] = 3
-            config['actor_hiddens'] = [400, 300]
+            config['actor_hiddens'] = [64, 64]
             config['actor_hidden_activation'] = 'relu'
             config['actor_lr'] = 0.001  # in article 'ddpg'
-            config['critic_lr'] = 0.00001
-            config['critic_hiddens'] = [400, 300]
+            config['critic_lr'] = 0.000001
+            config['critic_hiddens'] = [64, 64]
             config['critic_hidden_activation'] = 'relu'
             config['gamma'] = 0.99
             config['model']['fcnet_hiddens'] = [256, 256]
@@ -166,14 +166,14 @@ def setup_exps_rllib(flow_params,
             config['exploration_config']['type'] = 'GaussianNoise'
             # optimization
             config['tau'] = 0.005
-            config['l2_reg'] = 1e-5
+            config['l2_reg'] = 4e-6
             config['train_batch_size'] = 256
             # each rollout worker has the train_batch_size = config['train_batch_size']/rollout_fragment_length
             config['rollout_fragment_length'] = 1
             config['learning_starts'] = 6000
             # evaluation
             config['timesteps_per_iteration'] = 3000
-            #config['evaluation_interval'] = 5
+            # config['evaluation_interval'] = 5
             config['buffer_size'] = 300000 #3e5
             config["prioritized_replay_beta_annealing_timesteps"] = 2000000
             config['prioritized_replay'] = True
