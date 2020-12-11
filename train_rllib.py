@@ -145,8 +145,8 @@ def setup_exps_rllib(flow_params,
             config['n_step'] = 3
             config['actor_hiddens'] = [64, 64]
             config['actor_hidden_activation'] = 'relu'
-            config['actor_lr'] = 0.001  # in article 'ddpg'
-            config['critic_lr'] = 0.000001
+            config['actor_lr'] = 0.00001  # in article 'ddpg'
+            config['critic_lr'] = 0.00001
             config['critic_hiddens'] = [64, 64]
             config['critic_hidden_activation'] = 'relu'
             config['gamma'] = 0.99
@@ -166,17 +166,17 @@ def setup_exps_rllib(flow_params,
             config['exploration_config']['type'] = 'GaussianNoise'
             # optimization
             config['tau'] = 0.005
-            config['l2_reg'] = 4e-6
+            config['l2_reg'] = 5e-6 # critic loss
             config['train_batch_size'] = 256
             # each rollout worker has the train_batch_size = config['train_batch_size']/rollout_fragment_length
             config['rollout_fragment_length'] = 1
-            config['learning_starts'] = 6000
+            config['learning_starts'] = 120000
             # evaluation
             config['timesteps_per_iteration'] = 3000
             # config['evaluation_interval'] = 5
             config['buffer_size'] = 300000 #3e5
             config["prioritized_replay_beta_annealing_timesteps"] = 2000000
-            config['prioritized_replay'] = True
+            config['prioritized_replay'] = False
             config['final_prioritized_replay_beta'] = 0.4
             config['prioritized_replay_eps'] = 0.00001
             config['clip_rewards'] = False
