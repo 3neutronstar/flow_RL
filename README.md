@@ -1,4 +1,4 @@
-# flow-autonomous-driving
+# flow_RL
 
 ### Requirement(Installment)
 - Ubuntu 18.04 is recommended. (Window OS is not supported.)
